@@ -3,12 +3,7 @@ import { supabase } from '@/lib/supabase';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 
-export const revalidate = 60;
-
-export async function generateStaticParams() {
-  const { data } = await supabase.from('careers').select('career_id');
-  return (data || []).map((row) => ({ id: row.career_id.toString() }));
-}
+export const runtime = 'edge';
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;

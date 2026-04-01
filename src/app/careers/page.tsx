@@ -1,8 +1,8 @@
 import { supabase } from '@/lib/supabase';
 import CareersClient from './CareersClient';
 
-// Revalidate every 60 seconds (ISR)
-export const revalidate = 60;
+// Use edge runtime for Cloudflare compatibility
+export const runtime = 'edge';
 
 export default async function CareersPage({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
   const resolvedParams = await searchParams;

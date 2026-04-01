@@ -1,26 +1,9 @@
-'use client';
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import ProgressBar from './ProgressBar';
+
+export const runtime = 'edge';
 
 export default function BlogPostPage({ params }: { params: { slug: string } }) {
-  const [progress, setProgress] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const el = document.documentElement;
-      const scrolled = el.scrollTop;
-      const max = el.scrollHeight - el.clientHeight;
-      if (max > 0) {
-        setProgress((scrolled / max) * 100);
-      } else {
-        setProgress(0);
-      }
-    };
-    
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   return (
     <>
       <nav>
@@ -35,9 +18,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
         </Link>
       </nav>
 
-      <div className="reading-progress">
-        <div className="reading-progress-fill" style={{ width: `${progress}%` }}></div>
-      </div>
+      <ProgressBar />
 
       <div className="article-header">
         <div className="article-cat">Emerging Careers · Technology</div>
