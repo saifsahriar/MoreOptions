@@ -38,7 +38,7 @@ export default function LandingPage() {
       </nav>
 
       {/* HERO */}
-      <section style={{ paddingTop: '64px' }}>
+      <section>
         <div className="hero">
           <div className="hero-left">
             <div className="hero-eyebrow"><span></span>Career Discovery Platform</div>
