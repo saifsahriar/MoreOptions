@@ -49,7 +49,7 @@ export default function BlogPage() {
       <div className="featured-section">
         <Link href="/blog/why-ai-wont-replace-careers" className="featured-card">
           <div className="featured-img" style={{ position: 'relative', overflow: 'hidden' }}>
-            <Image src="/images/blog/blog_ai_future_1774669442071.png" alt="AI Careers" fill style={{ objectFit: 'cover' }} />
+            <Image src="/images/blog/ai_future.png" alt="AI Careers" fill style={{ objectFit: 'cover' }} />
             <div className="featured-img-badge" style={{ position: 'relative', zIndex: 10 }}>Featured</div>
           </div>
           <div className="featured-body">
@@ -76,7 +76,7 @@ export default function BlogPage() {
         <div className="blog-grid">
           <Link href="/blog/beyond-ca" className="blog-card">
             <div className="blog-img">
-              <Image src="/images/blog/blog_commerce_1774669465229.png" alt="Commerce" fill style={{ objectFit: 'cover' }} />
+              <Image src="/images/blog/commerce.png" alt="Commerce" fill style={{ objectFit: 'cover' }} />
               <div className="blog-img-cat" style={{ position: 'absolute', bottom: 8, left: 8, zIndex: 10, background: 'rgba(255,255,255,0.9)', padding: '4px 8px', borderRadius: 4 }}>Commerce</div>
             </div>
             <div className="blog-body">
@@ -88,7 +88,7 @@ export default function BlogPage() {
 
           <Link href="/blog/post" className="blog-card">
             <div className="blog-img">
-              <Image src="/images/blog/blog_science_1774669483399.png" alt="Science" fill style={{ objectFit: 'cover' }} />
+              <Image src="/images/blog/science.png" alt="Science" fill style={{ objectFit: 'cover' }} />
               <div className="blog-img-cat" style={{ position: 'absolute', bottom: 8, left: 8, zIndex: 10, background: 'rgba(255,255,255,0.9)', padding: '4px 8px', borderRadius: 4 }}>Science</div>
             </div>
             <div className="blog-body">
@@ -124,7 +124,7 @@ export default function BlogPage() {
 
           <Link href="/blog/post" className="blog-card">
             <div className="blog-img">
-              <Image src="/images/blog/blog_cybersecurity_1774669505173.png" alt="Technology" fill style={{ objectFit: 'cover' }} />
+              <Image src="/images/blog/cybersecurity.png" alt="Technology" fill style={{ objectFit: 'cover' }} />
               <div className="blog-img-cat" style={{ position: 'absolute', bottom: 8, left: 8, zIndex: 10, background: 'rgba(255,255,255,0.9)', padding: '4px 8px', borderRadius: 4 }}>Technology</div>
             </div>
             <div className="blog-body">
