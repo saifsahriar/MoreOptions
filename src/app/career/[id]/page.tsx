@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
+import MobileNavMenu from '../../MobileNavMenu';
 
 export const runtime = 'edge';
 
@@ -100,9 +101,12 @@ export default async function CareerPage({ params }: { params: Promise<{ id: str
           <li><Link href="/blog">Insights</Link></li>
           <li><Link href="#">For Counselors</Link></li>
         </ul>
-        <Link href="/">
-          <button className="nav-cta">Discover yours →</button>
-        </Link>
+        <div style={{display: 'flex', alignItems: 'center', gap: '16px'}}>
+          <Link href="/">
+            <button className="nav-cta">Discover yours →</button>
+          </Link>
+          <MobileNavMenu />
+        </div>
       </nav>
 
       <div className="breadcrumb">

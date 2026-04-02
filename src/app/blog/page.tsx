@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
+import MobileNavMenu from '../MobileNavMenu';
 import Image from 'next/image';
 
 export default function BlogPage() {
@@ -17,9 +18,12 @@ export default function BlogPage() {
           <li><Link href="/blog" className="active">Insights</Link></li>
           <li><Link href="#">For Counselors</Link></li>
         </ul>
-        <Link href="/">
-          <button className="nav-cta">Discover yours →</button>
-        </Link>
+        <div style={{display: 'flex', alignItems: 'center', gap: '16px'}}>
+          <Link href="/">
+            <button className="nav-cta">Discover yours →</button>
+          </Link>
+          <MobileNavMenu />
+        </div>
       </nav>
 
       <div className="page-header">

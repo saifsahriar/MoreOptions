@@ -1,6 +1,7 @@
 'use client';
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
+import MobileNavMenu from '../MobileNavMenu';
 
 type Career = {
   id: string;
@@ -128,9 +129,12 @@ export default function CareersClient({
           <li><Link href="/blog">Insights</Link></li>
           <li><Link href="#">For Counselors</Link></li>
         </ul>
-        <Link href="/">
-          <button className="nav-cta">Discover yours →</button>
-        </Link>
+        <div style={{display: 'flex', alignItems: 'center', gap: '16px'}}>
+          <Link href="/">
+            <button className="nav-cta">Discover yours →</button>
+          </Link>
+          <MobileNavMenu />
+        </div>
       </nav>
 
       <div className="page-header">

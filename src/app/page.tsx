@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
+import MobileNavMenu from './MobileNavMenu';
 
 export default function LandingPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -34,7 +35,10 @@ export default function LandingPage() {
           <li><Link href="/blog">Insights</Link></li>
           <li><Link href="#">For Counselors</Link></li>
         </ul>
-        <button className="nav-cta" onClick={openModal}>Discover yours →</button>
+        <div style={{display: 'flex', alignItems: 'center', gap: '16px'}}>
+          <button className="nav-cta" onClick={openModal}>Discover yours →</button>
+          <MobileNavMenu />
+        </div>
       </nav>
 
       {/* HERO */}

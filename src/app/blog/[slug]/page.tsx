@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import ProgressBar from './ProgressBar';
+import MobileNavMenu from '../../MobileNavMenu';
 
 export const runtime = 'edge';
 
@@ -13,9 +14,12 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
           <li><Link href="/blog" className="active">Insights</Link></li>
           <li><Link href="#">For Counselors</Link></li>
         </ul>
-        <Link href="/">
-          <button className="nav-cta">Discover yours →</button>
-        </Link>
+        <div style={{display: 'flex', alignItems: 'center', gap: '16px'}}>
+          <Link href="/">
+            <button className="nav-cta">Discover yours →</button>
+          </Link>
+          <MobileNavMenu />
+        </div>
       </nav>
 
       <ProgressBar />
