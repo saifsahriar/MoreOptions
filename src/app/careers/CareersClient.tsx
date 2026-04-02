@@ -44,8 +44,9 @@ export default function CareersClient({
   }
   
   const initialTraits = searchParams?.traits ? String(searchParams.traits).split(',') : [];
+  const initialQuery = searchParams?.query ? String(searchParams.query) : '';
 
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState(initialQuery);
   const [streamFilter, setStreamFilter] = useState(initialStream);
   const [interestFilter, setInterestFilter] = useState('All');
   const [demandFilter, setDemandFilter] = useState('All');

@@ -1,15 +1,24 @@
 import { supabase } from '@/lib/supabase';
 import CareersClient from './CareersClient';
 
-// Use edge runtime for Cloudflare compatibility
-export const runtime = 'edge';
+// Using standard Node.js runtime for better networking stability in local development
+// export const runtime = 'edge';
 
 export default async function CareersPage({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
   const resolvedParams = await searchParams;
-  let { data: rows, error } = await supabase.from('careers').select('*').order('career_name');
+  // Optimized fetch: only select the columns we actually use
+  let { data: rows, error } = await supabase
+    .from('careers')
+    .select('career_id, career_name, industry, stream, description, salary_range_india, demand_trend, skills_tags')
+    .order('career_name');
   
   if (error) {
-    console.error("Error fetching careers:", error);
+    console.error("Supabase Error fetching careers:", {
+      message: error.message,
+      details: error.details,
+      hint: error.hint,
+      code: error.code
+    });
   } else if (rows) {
     const hasFA = rows.some(r => r.career_id === 'IND-FA0001');
     if (!hasFA) {

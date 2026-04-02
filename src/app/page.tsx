@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import MobileNavMenu from './MobileNavMenu';
 
 export default function LandingPage() {
@@ -10,6 +11,8 @@ export default function LandingPage() {
   const [selectedEducation, setSelectedEducation] = useState<string | null>(null);
   const [selectedTraits, setSelectedTraits] = useState<string[]>([]);
   const [activeFilter, setActiveFilter] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
+  const router = useRouter();
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => {
@@ -22,6 +25,15 @@ export default function LandingPage() {
       setSelectedTraits(selectedTraits.filter((t) => t !== trait));
     } else if (selectedTraits.length < 3) {
       setSelectedTraits([...selectedTraits, trait]);
+    }
+  };
+
+  const handleSearch = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/careers?query=${encodeURIComponent(searchQuery.trim())}`);
+    } else {
+      router.push('/careers');
     }
   };
 
@@ -48,17 +60,28 @@ export default function LandingPage() {
             <div className="hero-eyebrow"><span></span>Career Discovery Platform</div>
             <h1 className="hero-title">Beyond doctor.<br/><em>Beyond engineer.</em><br/>Beyond limits.</h1>
             <p className="hero-sub">Explore 600+ career paths designed for Indian students — with real salary data, growth trends, and step-by-step roadmaps.</p>
-            <div className="search-wrap">
-              <input type="text" placeholder="Search a career — try 'Pilot' or 'UX Designer'" />
-              <button className="search-btn">Explore →</button>
-            </div>
+            <form className="search-wrap" onSubmit={handleSearch}>
+              <input 
+                type="text" 
+                placeholder="Search a career — try 'Pilot' or 'UX Designer'" 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <button className="search-btn" type="submit">Explore →</button>
+            </form>
             <div className="hero-tags">
-              <span className="hero-tag">Creative</span>
-              <span className="hero-tag">Technology</span>
-              <span className="hero-tag">Science</span>
-              <span className="hero-tag">Commerce</span>
-              <span className="hero-tag">Arts & Design</span>
-              <span className="hero-tag">Nature</span>
+              {['Creative', 'Technology', 'Science', 'Commerce', 'Arts & Design', 'Nature'].map(tag => (
+                <button 
+                  key={tag} 
+                  className="hero-tag" 
+                  onClick={() => {
+                    setSearchQuery(tag);
+                    router.push(`/careers?query=${encodeURIComponent(tag)}`);
+                  }}
+                >
+                  {tag}
+                </button>
+              ))}
             </div>
           </div>
 
