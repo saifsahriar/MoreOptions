@@ -414,7 +414,20 @@
   /* RESPONSIVE */
   @media (max-width: 900px) {
     nav { padding: 0 24px; }
-    .nav-links { display: none; }
+    .nav-links { 
+      display: flex;
+      position: absolute;
+      top: 64px;
+      left: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      padding: 12px 24px;
+      justify-content: center;
+      gap: 24px;
+    }
 
     .hero {
       grid-template-columns: 1fr;
@@ -755,7 +768,20 @@ footer {
 /* RESPONSIVE */
 @media (max-width: 900px) {
   nav { padding: 0 24px; }
-  .nav-links { display: none; }
+  .nav-links { 
+    display: flex;
+    position: absolute;
+    top: 64px;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    padding: 12px 24px;
+    justify-content: center;
+    gap: 24px;
+  }
   .page-header { padding: 100px 24px 40px; }
   .page-header-top { flex-direction: column; align-items: flex-start; }
   .search-bar-wrap { max-width: 100%; min-width: unset; width: 100%; }
@@ -984,7 +1010,20 @@ footer {
 
 @media (max-width: 900px) {
   nav { padding: 0 24px; }
-  .nav-links { display: none; }
+  .nav-links { 
+    display: flex;
+    position: absolute;
+    top: 64px;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    padding: 12px 24px;
+    justify-content: center;
+    gap: 24px;
+  }
   .breadcrumb { padding: 86px 24px 0; }
   .career-hero { grid-template-columns: 1fr; padding: 24px 24px 40px; gap: 32px; }
   .stats-card { position: static; }
@@ -1136,7 +1175,20 @@ footer {
 
 @media (max-width: 900px) {
   nav { padding: 0 24px; }
-  .nav-links { display: none; }
+  .nav-links { 
+    display: flex;
+    position: absolute;
+    top: 64px;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    padding: 12px 24px;
+    justify-content: center;
+    gap: 24px;
+  }
   .page-header { padding: 100px 24px 40px; flex-direction: column; align-items: flex-start; }
   .featured-section { padding: 40px 24px 0; }
   .featured-card { grid-template-columns: 1fr; }
@@ -1324,7 +1376,20 @@ footer {
 
 @media (max-width: 900px) {
   nav { padding: 0 24px; }
-  .nav-links { display: none; }
+  .nav-links { 
+    display: flex;
+    position: absolute;
+    top: 64px;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    padding: 12px 24px;
+    justify-content: center;
+    gap: 24px;
+  }
   .article-header { padding: 90px 24px 0; }
   .article-hero-img { padding: 0 24px 40px; }
   .article-layout { grid-template-columns: 1fr; padding: 0 24px 60px; gap: 40px; }
