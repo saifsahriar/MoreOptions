@@ -35,7 +35,7 @@ export default function LandingPage() {
           <li><Link href="/blog">Insights</Link></li>
           <li><Link href="#">For Counselors</Link></li>
         </ul>
-        <div style={{display: 'flex', alignItems: 'center', gap: '16px'}}>
+        <div className="nav-actions">
           <button className="nav-cta" onClick={openModal}>Discover yours →</button>
           <MobileNavMenu />
         </div>

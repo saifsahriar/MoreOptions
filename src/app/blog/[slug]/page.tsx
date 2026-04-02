@@ -14,7 +14,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
           <li><Link href="/blog" className="active">Insights</Link></li>
           <li><Link href="#">For Counselors</Link></li>
         </ul>
-        <div style={{display: 'flex', alignItems: 'center', gap: '16px'}}>
+        <div className="nav-actions">
           <Link href="/">
             <button className="nav-cta">Discover yours →</button>
           </Link>

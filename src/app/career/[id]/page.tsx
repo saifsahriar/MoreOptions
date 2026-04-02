@@ -101,7 +101,7 @@ export default async function CareerPage({ params }: { params: Promise<{ id: str
           <li><Link href="/blog">Insights</Link></li>
           <li><Link href="#">For Counselors</Link></li>
         </ul>
-        <div style={{display: 'flex', alignItems: 'center', gap: '16px'}}>
+        <div className="nav-actions">
           <Link href="/">
             <button className="nav-cta">Discover yours →</button>
           </Link>
