@@ -1,5 +1,5 @@
 'use client';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import MobileNavMenu from '../MobileNavMenu';
 
@@ -53,6 +53,14 @@ export default function CareersClient({
   const [minSalary, setMinSalary] = useState(0);
   const [sortOrder, setSortOrder] = useState('relevance');
   const [traitsFilter, setTraitsFilter] = useState<string[]>(initialTraits);
+
+  useEffect(() => {
+    setSearchQuery(searchParams?.query ? String(searchParams.query) : '');
+  }, [searchParams?.query]);
+
+  useEffect(() => {
+    setTraitsFilter(searchParams?.traits ? String(searchParams.traits).split(',') : []);
+  }, [searchParams?.traits]);
 
   const filteredCareers = useMemo(() => {
     let result = initialCareers;
@@ -119,7 +127,7 @@ export default function CareersClient({
     }
 
     return sorted;
-  }, [searchQuery, streamFilter, interestFilter, demandFilter, minSalary, sortOrder]);
+  }, [searchQuery, streamFilter, interestFilter, demandFilter, minSalary, sortOrder, traitsFilter, initialCareers]);
 
   return (
     <>
