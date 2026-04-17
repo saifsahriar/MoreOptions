@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'MoreOptions — Discover Your Career',
+  title: 'Discover Your Career',
   description: 'Explore 600+ career paths designed for Indian students',
 }
 
