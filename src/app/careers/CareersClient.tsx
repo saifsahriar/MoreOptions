@@ -1,6 +1,7 @@
 'use client';
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useDeferredValue } from 'react';
 import Link from 'next/link';
+import { useRouter, usePathname } from 'next/navigation';
 import MobileNavMenu from '../MobileNavMenu';
 
 type Career = {
@@ -47,12 +48,30 @@ export default function CareersClient({
   const initialQuery = searchParams?.query ? String(searchParams.query) : '';
 
   const [searchQuery, setSearchQuery] = useState(initialQuery);
+  const deferredSearchQuery = useDeferredValue(searchQuery);
+
   const [streamFilter, setStreamFilter] = useState(initialStream);
   const [interestFilter, setInterestFilter] = useState('All');
   const [demandFilter, setDemandFilter] = useState('All');
   const [minSalary, setMinSalary] = useState(0);
   const [sortOrder, setSortOrder] = useState('relevance');
   const [traitsFilter, setTraitsFilter] = useState<string[]>(initialTraits);
+
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const handleSearchUpdate = (val: string) => {
+    setSearchQuery(val);
+    const params = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : new URLSearchParams();
+    if (val.trim()) {
+      params.set('query', val.trim());
+    } else {
+      params.delete('query');
+    }
+    if (typeof window !== 'undefined') {
+      window.history.replaceState(null, '', `${pathname}?${params.toString()}`);
+    }
+  };
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -67,8 +86,8 @@ export default function CareersClient({
   const filteredCareers = useMemo(() => {
     let result = initialCareers;
 
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase().trim();
+    if (deferredSearchQuery) {
+      const q = deferredSearchQuery.toLowerCase().trim();
       result = result.filter(c => {
         const fullText = [c.name, c.cat, c.desc, ...(c.skills || [])].join(' ').toLowerCase();
         return fullText.includes(q);
@@ -129,7 +148,7 @@ export default function CareersClient({
     }
 
     return sorted;
-  }, [searchQuery, streamFilter, interestFilter, demandFilter, minSalary, sortOrder, traitsFilter, initialCareers]);
+  }, [deferredSearchQuery, streamFilter, interestFilter, demandFilter, minSalary, sortOrder, traitsFilter, initialCareers]);
 
   return (
     <>
@@ -161,7 +180,7 @@ export default function CareersClient({
               type="text" 
               placeholder="Search careers — try 'Pilot', 'AI'…" 
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => handleSearchUpdate(e.target.value)}
             />
           </div>
         </div>

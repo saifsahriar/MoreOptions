@@ -86,7 +86,7 @@ export default function LandingPage() {
           </div>
 
           <div className="hero-right">
-            <div className="float-card">
+            <Link href="/career/IND-4f0c7f88d236" className="float-card">
               <div className="float-card-top">
                 <span className="float-card-name">UX Designer</span>
                 <span className="float-card-tag">Creative</span>
@@ -97,8 +97,8 @@ export default function LandingPage() {
                 <div className="float-card-stat"><strong>High</strong>Demand</div>
                 <div className="float-card-stat"><strong>Any stream</strong>Eligibility</div>
               </div>
-            </div>
-            <div className="float-card" style={{ marginLeft: '24px' }}>
+            </Link>
+            <Link href="/career/IND-17381a6c80e8" className="float-card" style={{ marginLeft: '24px' }}>
               <div className="float-card-top">
                 <span className="float-card-name">Marine Biologist</span>
                 <span className="float-card-tag">Science</span>
@@ -109,8 +109,8 @@ export default function LandingPage() {
                 <div className="float-card-stat"><strong>Growing</strong>Demand</div>
                 <div className="float-card-stat"><strong>Science</strong>Eligibility</div>
               </div>
-            </div>
-            <div className="float-card">
+            </Link>
+            <Link href="/career/IND-FA0001" className="float-card">
               <div className="float-card-top">
                 <span className="float-card-name">Forensic Accountant</span>
                 <span className="float-card-tag">Commerce</span>
@@ -121,7 +121,7 @@ export default function LandingPage() {
                 <div className="float-card-stat"><strong>High</strong>Demand</div>
                 <div className="float-card-stat"><strong>Commerce</strong>Eligibility</div>
               </div>
-            </div>
+            </Link>
           </div>
         </div>
       </section>
@@ -165,7 +165,7 @@ export default function LandingPage() {
         </div>
 
         <div className="careers-grid">
-          <div className="career-card">
+          <Link href="/career/IND-1e60d1556d2a" className="career-card">
             <div className="career-card-cat">Technology</div>
             <div className="career-card-name">AI/ML Engineer</div>
             <p className="career-card-desc">Build the systems that power intelligent applications, from recommendation engines to language models.</p>
@@ -173,8 +173,8 @@ export default function LandingPage() {
               <span className="career-card-salary">₹12–50 LPA</span>
               <span className="career-card-demand demand-high">High demand</span>
             </div>
-          </div>
-          <div className="career-card">
+          </Link>
+          <Link href="/career/IND-0697987cc583" className="career-card">
             <div className="career-card-cat">Creative</div>
             <div className="career-card-name">Game Designer</div>
             <p className="career-card-desc">Craft interactive worlds, mechanics, and stories that millions of players experience firsthand.</p>
@@ -182,8 +182,8 @@ export default function LandingPage() {
               <span className="career-card-salary">₹5–25 LPA</span>
               <span className="career-card-demand demand-high">High demand</span>
             </div>
-          </div>
-          <div className="career-card">
+          </Link>
+          <Link href="/career/IND-1518362a624c" className="career-card">
             <div className="career-card-cat">Science</div>
             <div className="career-card-name">Environmental Scientist</div>
             <p className="career-card-desc">Analyze ecosystems, study climate impact, and advise governments on sustainability policy.</p>
@@ -191,8 +191,8 @@ export default function LandingPage() {
               <span className="career-card-salary">₹4–16 LPA</span>
               <span className="career-card-demand demand-mid">Growing</span>
             </div>
-          </div>
-          <div className="career-card">
+          </Link>
+          <Link href="/career/IND-ef93e9a4df7d" className="career-card">
             <div className="career-card-cat">Commerce</div>
             <div className="career-card-name">Investment Banker</div>
             <p className="career-card-desc">Advise corporations on mergers, acquisitions, and capital raising at the highest levels of finance.</p>
@@ -200,8 +200,8 @@ export default function LandingPage() {
               <span className="career-card-salary">₹15–80 LPA</span>
               <span className="career-card-demand demand-high">High demand</span>
             </div>
-          </div>
-          <div className="career-card">
+          </Link>
+          <Link href="/career/IND-69b7e50e64d8" className="career-card">
             <div className="career-card-cat">People & Society</div>
             <div className="career-card-name">Organizational Psychologist</div>
             <p className="career-card-desc">Help companies build healthier workplaces by understanding human behavior and motivation at work.</p>
@@ -209,8 +209,8 @@ export default function LandingPage() {
               <span className="career-card-salary">₹6–20 LPA</span>
               <span className="career-card-demand demand-mid">Growing</span>
             </div>
-          </div>
-          <div className="career-card">
+          </Link>
+          <Link href="/career/IND-2fa342702be0" className="career-card">
             <div className="career-card-cat">Technology</div>
             <div className="career-card-name">Cybersecurity Analyst</div>
             <p className="career-card-desc">Defend digital infrastructure from hackers, protect data, and respond to live security threats.</p>
@@ -218,7 +218,7 @@ export default function LandingPage() {
               <span className="career-card-salary">₹8–35 LPA</span>
               <span className="career-card-demand demand-high">High demand</span>
             </div>
-          </div>
+          </Link>
         </div>
       </section>
 

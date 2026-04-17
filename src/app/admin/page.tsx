@@ -37,6 +37,16 @@ export default function AdminDashboard() {
 
   const [careers, setCareers] = useState<CareerObj[]>([]);
 
+  const fetchCareers = useCallback(async () => {
+    try {
+      const data = await serverFetchCareers();
+      if (data) setCareers(data);
+    } catch (err) {
+      console.warn('Backend fetch policy restriction or network error');
+      setIsAuthenticated(false);
+    }
+  }, []);
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
@@ -59,17 +69,7 @@ export default function AdminDashboard() {
     });
 
     return () => subscription.unsubscribe();
-  }, []);
-
-  const fetchCareers = useCallback(async () => {
-    try {
-      const data = await serverFetchCareers();
-      if (data) setCareers(data);
-    } catch (err) {
-      console.warn('Backend fetch policy restriction or network error');
-      setIsAuthenticated(false);
-    }
-  }, []);
+  }, [fetchCareers]);
 
   const handleDelete = async (id: string | number) => {
     if (!confirm('Are you sure you want to delete this career?')) return;

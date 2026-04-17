@@ -1,0 +1,69 @@
+
+> career-discovery@0.1.0 lint
+> eslint
+
+
+/home/saif/Apps/more options/career-discovery/get-ids.mjs
+  2:8  warning  'fs' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/saif/Apps/more options/career-discovery/next.config.ts
+  1:15  warning  'NextConfig' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/saif/Apps/more options/career-discovery/src/app/admin/page.tsx
+  45:9   error    Error: Cannot access variable before it is declared
+
+`fetchCareers` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+/home/saif/Apps/more options/career-discovery/src/app/admin/page.tsx:45:9
+  43 |         setIsAuthenticated(true);
+  44 |         setUser(session.user);
+> 45 |         fetchCareers();
+     |         ^^^^^^^^^^^^ `fetchCareers` accessed before it is declared
+  46 |       }
+  47 |     });
+  48 |
+
+/home/saif/Apps/more options/career-discovery/src/app/admin/page.tsx:64:3
+  62 |   }, []);
+  63 |
+> 64 |   const fetchCareers = useCallback(async () => {
+     |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 65 |     try {
+     | ^^^^^^^^^
+> 66 |       const data = await serverFetchCareers();
+     | ^^^^^^^^^
+> 67 |       if (data) setCareers(data);
+     | ^^^^^^^^^
+> 68 |     } catch (err) {
+     | ^^^^^^^^^
+> 69 |       console.warn('Backend fetch policy restriction or network error');
+     | ^^^^^^^^^
+> 70 |       setIsAuthenticated(false);
+     | ^^^^^^^^^
+> 71 |     }
+     | ^^^^^^^^^
+> 72 |   }, []);
+     | ^^^^^^^^^^ `fetchCareers` is declared here
+  73 |
+  74 |   const handleDelete = async (id: string | number) => {
+  75 |     if (!confirm('Are you sure you want to delete this career?')) return;  react-hooks/immutability
+  62:6   warning  React Hook useEffect has a missing dependency: 'fetchCareers'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        react-hooks/exhaustive-deps
+  68:14  warning  'err' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+  80:14  warning  'err' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+  91:14  warning  'err' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+
+/home/saif/Apps/more options/career-discovery/src/app/blog/[slug]/page.tsx
+  7:40  warning  'params' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/saif/Apps/more options/career-discovery/src/app/careers/CareersClient.tsx
+  60:9  warning  'router' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/home/saif/Apps/more options/career-discovery/src/app/layout.tsx
+  19:9  warning  Custom fonts not added in `pages/_document.js` will only load for a single page. This is discouraged. See: https://nextjs.org/docs/messages/no-page-custom-font  @next/next/no-page-custom-font
+
+/home/saif/Apps/more options/career-discovery/src/lib/supabase-server.ts
+  18:20  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+  27:20  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+
+✖ 12 problems (1 error, 11 warnings)
+

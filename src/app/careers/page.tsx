@@ -53,5 +53,8 @@ export default async function CareersPage({ searchParams }: { searchParams: Prom
     };
   });
 
+  // Ensure strict case-insensitive alphabetical order for all entries, including any new ones
+  mappedCareers.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
+
   return <CareersClient initialCareers={mappedCareers} searchParams={resolvedParams} />;
 }
