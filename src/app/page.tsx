@@ -236,7 +236,7 @@ export default function LandingPage() {
             <div className="blog-img"><div className="blog-img-inner">✦</div></div>
             <div className="blog-body">
               <div className="blog-cat">Emerging Careers</div>
-              <div className="blog-title">Why AI won't replace these 12 careers — it will create them</div>
+              <div className="blog-title">Why AI won&apos;t replace these 12 careers — it will create them</div>
               <div className="blog-meta">8 min read · Careers & Technology</div>
             </div>
           </div>
@@ -244,7 +244,7 @@ export default function LandingPage() {
             <div className="blog-img"><div className="blog-img-inner">◈</div></div>
             <div className="blog-body">
               <div className="blog-cat">Commerce Stream</div>
-              <div className="blog-title">Beyond CA: 20 commerce careers most counselors won't tell you about</div>
+              <div className="blog-title">Beyond CA: 20 commerce careers most counselors won&apos;t tell you about</div>
               <div className="blog-meta">6 min read · Commerce & Finance</div>
             </div>
           </div>
@@ -265,7 +265,7 @@ export default function LandingPage() {
           <div className="cta-banner-left">
             <div className="cta-banner-eyebrow">Start your journey</div>
             <div className="cta-banner-title">Find the career that<br/>was made for you.</div>
-            <p className="cta-banner-sub">Answer 3 quick questions and we'll surface careers<br/>matched to your stream, interests, and personality.</p>
+            <p className="cta-banner-sub">Answer 3 quick questions and we&apos;ll surface careers<br/>matched to your stream, interests, and personality.</p>
           </div>
           <button className="cta-banner-btn" onClick={openModal}>Discover your path →</button>
         </div>

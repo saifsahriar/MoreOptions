@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import { supabase } from '@/lib/supabase';
 import { fetchCareers as serverFetchCareers, saveCareer, deleteCareer } from '@/lib/actions';
 import type { User } from '@supabase/supabase-js';
+import type { CareerObj } from './AdminContent';
 
 const AdminContent = dynamic(() => import('./AdminContent'), {
   loading: () => <div className="admin-shell"><main className="admin-main"><div className="admin-content">Loading security context...</div></main></div>,
@@ -22,8 +23,19 @@ export default function AdminDashboard() {
   const [showBlogModal, setShowBlogModal] = useState(false);
   const [toastMsg, setToastMsg] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [editingCareer, setEditingCareer] = useState<CareerObj | null>(null);
 
-  const [careers, setCareers] = useState<any[]>([]);
+  const [formData, setFormData] = useState({
+    career_id: '',
+    career_name: '',
+    industry: 'Technology',
+    stream: 'Any Stream',
+    salary_range_india: '',
+    demand_trend: 'High',
+    description: ''
+  });
+
+  const [careers, setCareers] = useState<CareerObj[]>([]);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -59,7 +71,7 @@ export default function AdminDashboard() {
     }
   }, []);
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string | number) => {
     if (!confirm('Are you sure you want to delete this career?')) return;
     try {
       await deleteCareer(id);
@@ -70,7 +82,7 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleSave = async (formData: any) => {
+  const handleSave = async (formData: CareerObj | Omit<CareerObj, 'career_id'>) => {
     try {
       await saveCareer(formData);
       setShowAddModal(false);
@@ -102,7 +114,7 @@ export default function AdminDashboard() {
     (c.industry || '').toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const getDemandClass = (d: string) => {
+  const getDemandClass = (d?: string) => {
     const val = (d || '').toLowerCase();
     if (val === 'high') return 'd-high';
     if (val === 'growing') return 'd-mid';
@@ -141,7 +153,34 @@ export default function AdminDashboard() {
         setSearchQuery={setSearchQuery}
         handleLogout={handleLogout}
         handleDelete={handleDelete}
-        setShowAddModal={setShowAddModal}
+        setShowAddModal={(show: boolean, career?: CareerObj) => {
+          if (show) {
+            if (career) {
+              setEditingCareer(career);
+              setFormData({
+                career_id: career.career_id || '',
+                career_name: career.career_name || '',
+                industry: career.industry || 'Technology',
+                stream: career.stream || 'Any Stream',
+                salary_range_india: career.salary_range_india || '',
+                demand_trend: career.demand_trend || 'High',
+                description: career.description || ''
+              });
+            } else {
+              setEditingCareer(null);
+              setFormData({
+                career_id: '',
+                career_name: '',
+                industry: 'Technology',
+                stream: 'Any Stream',
+                salary_range_india: '',
+                demand_trend: 'High',
+                description: ''
+              });
+            }
+          }
+          setShowAddModal(show)
+        }}
         setShowBlogModal={setShowBlogModal}
         getDemandClass={getDemandClass}
       />
@@ -155,25 +194,25 @@ export default function AdminDashboard() {
               <button className="modal-close" onClick={() => setShowAddModal(false)}>×</button>
             </div>
             <div className="modal-body">
-              <div className="form-row"><label>Career name</label><input type="text" placeholder="e.g. Marine Biologist" /></div>
+              <div className="form-row"><label>Career name</label><input type="text" placeholder="e.g. Marine Biologist" value={formData.career_name} onChange={e => setFormData({...formData, career_name: e.target.value})} /></div>
               <div className="form-row-2">
                 <div><label>Category</label>
-                  <select>
+                  <select value={formData.industry} onChange={e => setFormData({...formData, industry: e.target.value})}>
                     <option>Technology</option><option>Creative</option><option>Science</option>
                     <option>Commerce</option><option>People & Society</option><option>Nature</option>
                   </select>
                 </div>
                 <div><label>Stream eligibility</label>
-                  <select>
+                  <select value={formData.stream} onChange={e => setFormData({...formData, stream: e.target.value})}>
                     <option>Any Stream</option><option>Science</option><option>Commerce</option><option>Arts</option>
                   </select>
                 </div>
               </div>
-              <div className="form-row"><label>Short description</label><textarea placeholder="One or two sentences describing what this career involves…"></textarea></div>
+              <div className="form-row"><label>Short description</label><textarea placeholder="One or two sentences describing what this career involves…" value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})}></textarea></div>
               <div className="form-row-2">
-                <div><label>Salary range (India)</label><input type="text" placeholder="e.g. ₹6–22 LPA" /></div>
+                <div><label>Salary range (India)</label><input type="text" placeholder="e.g. ₹6–22 LPA" value={formData.salary_range_india} onChange={e => setFormData({...formData, salary_range_india: e.target.value})} /></div>
                 <div><label>Market demand</label>
-                  <select><option>High</option><option>Growing</option><option>Emerging</option></select>
+                  <select value={formData.demand_trend} onChange={e => setFormData({...formData, demand_trend: e.target.value})}><option>High</option><option>Growing</option><option>Emerging</option></select>
                 </div>
               </div>
               <div className="form-row-2">
@@ -184,24 +223,7 @@ export default function AdminDashboard() {
             </div>
             <div className="modal-foot">
               <button className="btn btn-ghost" onClick={() => setShowAddModal(false)}>Cancel</button>
-              <button className="btn btn-primary" onClick={() => { 
-                const form = document.querySelector('.modal-body') as any;
-                const nameInput = form.querySelector('input[placeholder="e.g. Marine Biologist"]') as HTMLInputElement;
-                const industrySelect = form.querySelector('select') as HTMLSelectElement;
-                const streamSelect = form.querySelectorAll('select')[1] as HTMLSelectElement;
-                const salaryInput = form.querySelector('input[placeholder="e.g. ₹6–22 LPA"]') as HTMLInputElement;
-                const demandSelect = form.querySelectorAll('select')[2] as HTMLSelectElement;
-                const descText = form.querySelector('textarea') as HTMLTextAreaElement;
-
-                handleSave({
-                  career_name: nameInput.value,
-                  industry: industrySelect.value,
-                  stream: streamSelect.value,
-                  salary_range_india: salaryInput.value,
-                  demand_trend: demandSelect.value,
-                  description: descText.value
-                });
-              }}>Save career →</button>
+              <button className="btn btn-primary" onClick={() => handleSave(formData)}>{editingCareer ? 'Update career →' : 'Save career →'}</button>
             </div>
           </div>
         </div>

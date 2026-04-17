@@ -6,6 +6,7 @@ import { checkRateLimit } from './rate-limit'
 import { z } from 'zod'
 
 const CareerSchema = z.object({
+  career_id: z.string().optional(),
   career_name: z.string().min(2).max(100),
   industry: z.string().min(2).max(100),
   stream: z.string().optional(),
@@ -50,7 +51,7 @@ export async function fetchCareers() {
   return data
 }
 
-export async function saveCareer(careerData: any) {
+export async function saveCareer(careerData: z.infer<typeof CareerSchema> | Record<string, unknown>) {
   await checkRateLimit('save_career')
   const user = await getSession()
   if (!user) {
@@ -65,19 +66,24 @@ export async function saveCareer(careerData: any) {
     throw new Error('Invalid input format')
   }
 
-  const { career_name, industry, stream, salary_range_india, demand_trend, description } = validatedData.data
+  const { career_id, career_name, industry, stream, salary_range_india, demand_trend, description } = validatedData.data
+
+  const payload: Record<string, unknown> = {
+    career_name,
+    industry,
+    stream,
+    salary_range_india,
+    demand_trend,
+    description,
+    updated_at: new Date().toISOString()
+  }
+  if (career_id) {
+    payload.career_id = career_id
+  }
 
   const { data, error } = await supabase
     .from('careers')
-    .upsert({
-      career_name,
-      industry,
-      stream,
-      salary_range_india,
-      demand_trend,
-      description,
-      updated_at: new Date().toISOString()
-    })
+    .upsert(payload, { onConflict: 'career_id' })
     .select()
 
   if (error) {
@@ -90,7 +96,7 @@ export async function saveCareer(careerData: any) {
   return data
 }
 
-export async function deleteCareer(id: number) {
+export async function deleteCareer(id: string | number) {
   await checkRateLimit('delete_career')
   const user = await getSession()
   if (!user) {

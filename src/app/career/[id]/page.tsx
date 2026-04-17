@@ -80,7 +80,6 @@ export default async function CareerPage({ params }: { params: Promise<{ id: str
   
   const currentNsqf = 6;
   const nsqfLevels = [1,2,3,4,5,6,7,8,9,10];
-  const demandClass = career.demand_trend?.toLowerCase() === 'high' ? 'd-high' : career.demand_trend?.toLowerCase() === 'growing' ? 'd-mid' : 'd-new';
 
   const jsonLd = {
     "@context": "https://schema.org/",
@@ -282,7 +281,7 @@ export default async function CareerPage({ params }: { params: Promise<{ id: str
           <div className="sidebar-card">
             <div className="sidebar-card-title">Related careers</div>
             <div className="related-card">
-              {related && related.map((rc: any) => (
+              {related && related.map((rc: { career_id: string; career_name: string; salary_range_india: string; demand_trend: string }) => (
                 <Link href={`/career/${rc.career_id}`} className="related-item" key={rc.career_id}>
                   <div className="related-name">{rc.career_name}</div>
                   <div className="related-salary">{rc.salary_range_india} · {rc.demand_trend}</div>

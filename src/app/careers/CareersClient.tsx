@@ -55,10 +55,12 @@ export default function CareersClient({
   const [traitsFilter, setTraitsFilter] = useState<string[]>(initialTraits);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSearchQuery(searchParams?.query ? String(searchParams.query) : '');
   }, [searchParams?.query]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setTraitsFilter(searchParams?.traits ? String(searchParams.traits).split(',') : []);
   }, [searchParams?.traits]);
 
@@ -116,7 +118,7 @@ export default function CareersClient({
     }
 
     // Sort
-    let sorted = [...result];
+    const sorted = [...result];
     if (sortOrder === 'salary-high') {
       sorted.sort((a,b) => b.salaryNum - a.salaryNum);
     } else if (sortOrder === 'salary-low') {

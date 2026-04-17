@@ -2,19 +2,29 @@
 import { User } from '@supabase/supabase-js';
 import Link from 'next/link';
 
+export interface CareerObj {
+  career_id: string;
+  career_name: string;
+  industry: string;
+  stream?: string;
+  salary_range_india?: string;
+  demand_trend?: string;
+  description?: string;
+}
+
 interface AdminContentProps {
   user: User | null;
   activeTab: string;
   setActiveTab: (tab: string) => void;
-  careers: any[];
-  filteredCareers: any[];
+  careers: CareerObj[];
+  filteredCareers: CareerObj[];
   searchQuery: string;
   setSearchQuery: (query: string) => void;
   handleLogout: () => void;
-  handleDelete: (id: number) => void;
-  setShowAddModal: (show: boolean) => void;
+  handleDelete: (id: string | number) => void;
+  setShowAddModal: (show: boolean, career?: CareerObj) => void;
   setShowBlogModal: (show: boolean) => void;
-  getDemandClass: (d: string) => string;
+  getDemandClass: (d?: string) => string;
 }
 
 export default function AdminContent({
@@ -175,7 +185,7 @@ export default function AdminContent({
                         <td>{c.salary_range_india || 'N/A'}</td>
                         <td><span className={`td-demand ${getDemandClass(c.demand_trend)}`}>{c.demand_trend}</span></td>
                         <td className="td-actions">
-                          <button className="btn btn-ghost btn-sm" onClick={() => setShowAddModal(true)}>Edit</button>
+                          <button className="btn btn-ghost btn-sm" onClick={() => setShowAddModal(true, c)}>Edit</button>
                           <button className="btn btn-danger btn-sm" onClick={() => handleDelete(c.career_id)}>Delete</button>
                         </td>
                       </tr>
