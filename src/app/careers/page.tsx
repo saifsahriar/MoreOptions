@@ -1,8 +1,7 @@
 import { supabase } from '@/lib/supabase';
 import CareersClient from './CareersClient';
 
-// Using standard Node.js runtime for better networking stability in local development
-// export const runtime = 'edge';
+export const runtime = 'edge';
 
 export default async function CareersPage({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
   const resolvedParams = await searchParams;
