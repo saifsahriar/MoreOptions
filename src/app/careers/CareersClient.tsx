@@ -62,26 +62,31 @@ export default function CareersClient({
 
   const handleSearchUpdate = (val: string) => {
     setSearchQuery(val);
-    const params = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : new URLSearchParams();
+    const params = new URLSearchParams(window.location.search);
     if (val.trim()) {
       params.set('query', val.trim());
     } else {
       params.delete('query');
     }
-    if (typeof window !== 'undefined') {
-      window.history.replaceState(null, '', `${pathname}?${params.toString()}`);
-    }
+    // Robust Next.js native routing that syncs URL without page reload
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
+  // Sync state if URL changes externally (e.g. back button, or clicking from home page)
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setSearchQuery(searchParams?.query ? String(searchParams.query) : '');
-  }, [searchParams?.query]);
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setTraitsFilter(searchParams?.traits ? String(searchParams.traits).split(',') : []);
-  }, [searchParams?.traits]);
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const q = params.get('query') || '';
+      if (searchQuery !== q) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setSearchQuery(q);
+      }
+      
+      const t = params.get('traits') ? params.get('traits')!.split(',') : [];
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setTraitsFilter(t);
+    }
+  }, [searchParams, searchQuery]); // re-run when Next.js detects a searchParams prop change
 
   const filteredCareers = useMemo(() => {
     let result = initialCareers;

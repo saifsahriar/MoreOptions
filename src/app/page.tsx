@@ -31,9 +31,9 @@ export default function LandingPage() {
   const handleSearch = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (searchQuery.trim()) {
-      router.push(`/careers?query=${encodeURIComponent(searchQuery.trim())}`);
+      window.location.href = `/careers?query=${encodeURIComponent(searchQuery.trim())}`;
     } else {
-      router.push('/careers');
+      window.location.href = '/careers';
     }
   };
 
@@ -76,7 +76,7 @@ export default function LandingPage() {
                   className="hero-tag" 
                   onClick={() => {
                     setSearchQuery(tag);
-                    router.push(`/careers?query=${encodeURIComponent(tag)}`);
+                    window.location.href = `/careers?query=${encodeURIComponent(tag)}`;
                   }}
                 >
                   {tag}
@@ -359,11 +359,11 @@ export default function LandingPage() {
                 </button>
               ))}
             </div>
-            <Link href={`/careers?stream=${selectedStream}&traits=${selectedTraits.join(',')}`}>
-              <button className="modal-next" style={{ background: '#1e7e34' }} disabled={selectedTraits.length === 0}>
+            <a href={`/careers?stream=${selectedStream}&traits=${selectedTraits.join(',')}`} style={{ textDecoration: 'none' }}>
+              <button className="modal-next" style={{ background: '#1e7e34', width: '100%' }} disabled={selectedTraits.length === 0}>
                 See my careers ✦
               </button>
-            </Link>
+            </a>
           </div>
         </div>
       </div>
