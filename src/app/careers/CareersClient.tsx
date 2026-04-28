@@ -68,8 +68,8 @@ export default function CareersClient({
     } else {
       params.delete('query');
     }
-    // Robust Next.js native routing that syncs URL without page reload
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    // Update URL without triggering a Next.js server fetch on every keystroke
+    window.history.replaceState(null, '', `${pathname}?${params.toString()}`);
   };
 
   // Sync state if URL changes externally (e.g. back button, or clicking from home page)
@@ -162,7 +162,7 @@ export default function CareersClient({
         <ul className="nav-links">
           <li><Link href="/careers" className="active">Explore Careers</Link></li>
           <li><Link href="/blog">Insights</Link></li>
-          <li><Link href="#">For Counselors</Link></li>
+          <li><Link href="/saved">Saved</Link></li>
         </ul>
         <div className="nav-actions">
           <Link href="/">

@@ -3,6 +3,7 @@ import { supabase } from '@/lib/supabase';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import MobileNavMenu from '../../MobileNavMenu';
+import CareerActions from './CareerActions';
 
 export const runtime = 'edge';
 
@@ -98,7 +99,7 @@ export default async function CareerPage({ params }: { params: Promise<{ id: str
         <ul className="nav-links">
           <li><Link href="/careers">Explore Careers</Link></li>
           <li><Link href="/blog">Insights</Link></li>
-          <li><Link href="#">For Counselors</Link></li>
+          <li><Link href="/saved">Saved</Link></li>
         </ul>
         <div className="nav-actions">
           <Link href="/">
@@ -122,10 +123,7 @@ export default async function CareerPage({ params }: { params: Promise<{ id: str
             <span className="career-tag">{career.stream || 'Any Stream'}</span>
             <span className="career-tag">NSQF Level 6</span>
           </div>
-          <div className="career-actions">
-            <button className="btn btn-primary">Save this career</button>
-            <button className="btn btn-ghost">Share →</button>
-          </div>
+          <CareerActions careerId={career.career_id} careerName={career.career_name} />
         </div>
 
         <div className="stats-card">

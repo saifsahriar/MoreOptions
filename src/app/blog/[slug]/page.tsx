@@ -1,10 +1,19 @@
 import Link from 'next/link';
 import ProgressBar from './ProgressBar';
 import MobileNavMenu from '../../MobileNavMenu';
+import Image from 'next/image';
+import { getBlogBySlug } from '@/lib/blogs';
+import { notFound } from 'next/navigation';
 
 export const runtime = 'edge';
 
 export default function BlogPostPage({ params }: { params: { slug: string } }) {
+  const blog = getBlogBySlug(params.slug);
+
+  if (!blog) {
+    notFound();
+  }
+
   return (
     <>
       <nav>
@@ -12,7 +21,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
         <ul className="nav-links">
           <li><Link href="/careers">Explore Careers</Link></li>
           <li><Link href="/blog" className="active">Insights</Link></li>
-          <li><Link href="#">For Counselors</Link></li>
+          <li><Link href="/saved">Saved</Link></li>
         </ul>
         <div className="nav-actions">
           <Link href="/">
@@ -25,23 +34,18 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
       <ProgressBar />
 
       <div className="article-header">
-        <div className="article-cat">Emerging Careers · Technology</div>
-        <h1 className="article-title">Why AI won&apos;t replace these 12 careers — it will create them</h1>
-        <p className="article-desc">The conversation around AI and jobs is mostly fear. Here&apos;s the part nobody talks about: the entirely new professions emerging because of AI.</p>
+        <div className="article-cat">{blog.category}</div>
+        <h1 className="article-title">{blog.title}</h1>
+        <p className="article-desc">{blog.desc}</p>
         <div className="article-meta">
-          <span>12 min read</span>
+          <span>{blog.time}</span>
           <div className="article-meta-dot"></div>
-          <span>March 2026</span>
-          <div className="article-meta-dot"></div>
-          <span>Technology</span>
+          <span>{blog.date}</span>
         </div>
       </div>
 
-      <div className="article-hero-img">
-        <div className="article-hero-img-inner">
-          AI
-          <div className="article-hero-img-text">Illustration: MoreOptions</div>
-        </div>
+      <div className="article-hero-img" style={{ position: 'relative', height: '400px', overflow: 'hidden', borderRadius: '16px', margin: '0 auto', maxWidth: '1000px', marginBottom: '48px' }}>
+        <Image src={blog.image} alt={blog.title} fill style={{ objectFit: 'cover' }} />
       </div>
 
       <div className="article-layout">

@@ -3,6 +3,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import MobileNavMenu from './MobileNavMenu';
+import Image from 'next/image';
+import { blogs } from '@/lib/blogs';
 
 export default function LandingPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -45,7 +47,7 @@ export default function LandingPage() {
         <ul className="nav-links">
           <li><Link href="/careers">Explore Careers</Link></li>
           <li><Link href="/blog">Insights</Link></li>
-          <li><Link href="#">For Counselors</Link></li>
+          <li><Link href="/saved">Saved</Link></li>
         </ul>
         <div className="nav-actions">
           <button className="nav-cta" onClick={openModal}>Discover yours →</button>
@@ -232,30 +234,18 @@ export default function LandingPage() {
           <Link href="/blog" className="section-link">All articles →</Link>
         </div>
         <div className="blog-grid">
-          <div className="blog-card">
-            <div className="blog-img"><div className="blog-img-inner">✦</div></div>
-            <div className="blog-body">
-              <div className="blog-cat">Emerging Careers</div>
-              <div className="blog-title">Why AI won&apos;t replace these 12 careers — it will create them</div>
-              <div className="blog-meta">8 min read · Careers & Technology</div>
-            </div>
-          </div>
-          <div className="blog-card">
-            <div className="blog-img"><div className="blog-img-inner">◈</div></div>
-            <div className="blog-body">
-              <div className="blog-cat">Commerce Stream</div>
-              <div className="blog-title">Beyond CA: 20 commerce careers most counselors won&apos;t tell you about</div>
-              <div className="blog-meta">6 min read · Commerce & Finance</div>
-            </div>
-          </div>
-          <div className="blog-card">
-            <div className="blog-img"><div className="blog-img-inner">⬡</div></div>
-            <div className="blog-body">
-              <div className="blog-cat">Science Stream</div>
-              <div className="blog-title">The science careers that will matter most in India by 2035</div>
-              <div className="blog-meta">10 min read · Science & Research</div>
-            </div>
-          </div>
+          {blogs.slice(0, 3).map((blog) => (
+            <Link href={`/blog/${blog.slug}`} key={blog.slug} className="blog-card" style={{ textDecoration: 'none', color: 'inherit' }}>
+              <div className="blog-img" style={{ position: 'relative', overflow: 'hidden' }}>
+                <Image src={blog.image} alt={blog.title} fill style={{ objectFit: 'cover' }} />
+              </div>
+              <div className="blog-body">
+                <div className="blog-cat">{blog.category}</div>
+                <div className="blog-title">{blog.title}</div>
+                <div className="blog-meta">{blog.time} · {blog.date}</div>
+              </div>
+            </Link>
+          ))}
         </div>
       </section>
 
