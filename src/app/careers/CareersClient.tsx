@@ -77,7 +77,7 @@ export default function CareersClient({
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       const q = params.get('query') || '';
-      if (searchQuery !== q) {
+      if (searchQuery.trim() !== q.trim()) {
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setSearchQuery(q);
       }
