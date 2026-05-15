@@ -129,7 +129,7 @@ export default function AdminDashboard() {
           <div className="login-sub">Admin dashboard — restricted access</div>
           <form onSubmit={handleLogin}>
             <label className="login-label">Email</label>
-            <input className="login-input" type="text" placeholder="admin@moreoptions.in" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            <input className="login-input" type="email" placeholder="admin@moreoptions.in" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" />
             <label className="login-label">Password</label>
             <input className="login-input" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required />
             <button className="login-btn" type="submit">Sign in →</button>

@@ -7,20 +7,20 @@ import { z } from 'zod'
 
 const CareerSchema = z.object({
   career_id: z.string().optional(),
-  career_name: z.string().min(2).max(100),
-  industry: z.string().min(2).max(100),
-  stream: z.string().optional(),
-  salary_range_india: z.string().max(100).optional(),
-  demand_trend: z.string().max(50).optional(),
-  description: z.string().max(3000).optional(),
+  career_name: z.string().min(2).max(100).transform(s => s.trim()),
+  industry: z.string().min(2).max(100).transform(s => s.trim()),
+  stream: z.string().transform(s => s.trim()).optional(),
+  salary_range_india: z.string().max(100).transform(s => s.trim()).optional(),
+  demand_trend: z.string().max(50).transform(s => s.trim()).optional(),
+  description: z.string().max(3000).transform(s => s.trim()).optional(),
 });
 
 async function getSession() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   
-  // DEFENSE-IN-DEPTH: Explicit admin check
-  const ADMIN_EMAILS = ['admin@moreoptions.in', 'saif@moreoptions.in']; 
+  // DEFENSE-IN-DEPTH: Explicit admin check — reads from env var with fallback
+  const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || 'admin@moreoptions.in,saif@moreoptions.in').split(',').map(e => e.trim()); 
   if (user && !ADMIN_EMAILS.includes(user.email || '')) {
     console.error(`Unauthorized access attempt by ${user.email}`);
     return null;

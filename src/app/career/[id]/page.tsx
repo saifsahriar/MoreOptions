@@ -79,7 +79,7 @@ export default async function CareerPage({ params }: { params: Promise<{ id: str
   const skills = career.skills_tags ? career.skills_tags.split(',').map((s: string) => s.trim()) : [];
   const pathways = career.typical_pathways ? career.typical_pathways.split(';').map((s: string) => s.trim()) : [];
   
-  const currentNsqf = 6;
+  const currentNsqf = career.nsqf_level || 6;
   const nsqfLevels = [1,2,3,4,5,6,7,8,9,10];
 
   const jsonLd = {
@@ -93,7 +93,7 @@ export default async function CareerPage({ params }: { params: Promise<{ id: str
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/<\/script>/gi, '<\\/script>') }} />
       <nav>
         <Link href="/" className="nav-logo">MoreOptions</Link>
         <ul className="nav-links">
@@ -121,7 +121,7 @@ export default async function CareerPage({ params }: { params: Promise<{ id: str
           <p className="career-desc">{career.description || 'Detailed description coming soon.'}</p>
           <div className="career-tags">
             <span className="career-tag">{career.stream || 'Any Stream'}</span>
-            <span className="career-tag">NSQF Level 6</span>
+            <span className="career-tag">NSQF Level {currentNsqf}</span>
           </div>
           <CareerActions careerId={career.career_id} careerName={career.career_name} />
         </div>
@@ -239,7 +239,7 @@ export default async function CareerPage({ params }: { params: Promise<{ id: str
         <aside className="career-sidebar">
           <div className="sidebar-card">
             <div className="sidebar-card-title">NSQF Level</div>
-            <div style={{ fontFamily: 'var(--serif)', fontSize: '28px', letterSpacing: '-0.5px', color: 'var(--text)', marginBottom: '6px' }}>Level 6</div>
+            <div style={{ fontFamily: 'var(--serif)', fontSize: '28px', letterSpacing: '-0.5px', color: 'var(--text)', marginBottom: '6px' }}>Level {currentNsqf}</div>
             <div style={{ fontSize: '13px', color: 'var(--text2)', lineHeight: 1.6 }}>Estimated level based on the National Skills Qualification Framework.</div>
             <div className="nsqf-levels">
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1 }}>

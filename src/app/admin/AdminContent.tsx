@@ -89,7 +89,7 @@ export default function AdminContent({
             {activeTab === 'settings' && 'Settings'}
           </div>
           <div className="topbar-actions">
-            <Link href="/" target="_blank">
+            <Link href="/" target="_blank" rel="noopener noreferrer">
               <button className="btn btn-ghost">View site ↗</button>
             </Link>
             {activeTab !== 'settings' && (

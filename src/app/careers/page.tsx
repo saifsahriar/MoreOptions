@@ -1,7 +1,17 @@
 import { supabase } from '@/lib/supabase';
 import CareersClient from './CareersClient';
+import type { Metadata } from 'next';
 
 export const runtime = 'edge';
+
+export const metadata: Metadata = {
+  title: 'Explore 600+ Career Paths in India | MoreOptions',
+  description: 'Filter by stream, interest, salary, and demand to find the career that fits you. Browse Science, Commerce, Arts, and emerging careers.',
+  openGraph: {
+    title: 'Explore 600+ Career Paths | MoreOptions',
+    description: 'Filter by stream, interest, salary, and demand to find the career that fits you.',
+  },
+};
 
 export default async function CareersPage({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
   const resolvedParams = await searchParams;

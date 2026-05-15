@@ -45,7 +45,7 @@ export default function CareersClient({
   }
   
   const initialTraits = searchParams?.traits ? String(searchParams.traits).split(',') : [];
-  const initialQuery = searchParams?.query ? String(searchParams.query) : '';
+  const initialQuery = searchParams?.query ? String(searchParams.query).slice(0, 200) : '';
 
   const [searchQuery, setSearchQuery] = useState(initialQuery);
   const deferredSearchQuery = useDeferredValue(searchQuery);

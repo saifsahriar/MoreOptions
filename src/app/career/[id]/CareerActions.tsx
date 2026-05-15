@@ -9,13 +9,26 @@ export default function CareerActions({ careerId, careerName }: { careerId: stri
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setHasMounted(true);
-    const saved = JSON.parse(localStorage.getItem('saved_careers') || '[]');
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setIsSaved(saved.includes(careerId));
+    try {
+      const raw = JSON.parse(localStorage.getItem('saved_careers') || '[]');
+      const saved = Array.isArray(raw) ? raw.filter((x: unknown) => typeof x === 'string') : [];
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setIsSaved(saved.includes(careerId));
+    } catch {
+      // Corrupted localStorage — treat as empty
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setIsSaved(false);
+    }
   }, [careerId]);
 
   const handleSave = () => {
-    const saved: string[] = JSON.parse(localStorage.getItem('saved_careers') || '[]');
+    let saved: string[] = [];
+    try {
+      const raw = JSON.parse(localStorage.getItem('saved_careers') || '[]');
+      saved = Array.isArray(raw) ? raw.filter((x: unknown) => typeof x === 'string') : [];
+    } catch {
+      saved = [];
+    }
     if (saved.includes(careerId)) {
       const updated = saved.filter(id => id !== careerId);
       localStorage.setItem('saved_careers', JSON.stringify(updated));

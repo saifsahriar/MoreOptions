@@ -21,7 +21,13 @@ export default function SavedClient({ allCareers }: { allCareers: Career[] }) {
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setHasMounted(true);
-    const savedIds = JSON.parse(localStorage.getItem('saved_careers') || '[]');
+    let savedIds: string[] = [];
+    try {
+      const raw = JSON.parse(localStorage.getItem('saved_careers') || '[]');
+      savedIds = Array.isArray(raw) ? raw.filter((x: unknown) => typeof x === 'string') : [];
+    } catch {
+      savedIds = [];
+    }
     const filtered = allCareers.filter(c => savedIds.includes(c.id));
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setSavedCareers(filtered);

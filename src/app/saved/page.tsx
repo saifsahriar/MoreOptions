@@ -1,7 +1,13 @@
 import { supabase } from '@/lib/supabase';
 import SavedClient from '@/app/saved/SavedClient';
+import type { Metadata } from 'next';
 
 export const runtime = 'edge';
+
+export const metadata: Metadata = {
+  title: 'Saved Careers | MoreOptions',
+  description: 'Review and compare the career paths you have bookmarked on MoreOptions.',
+};
 
 export default async function SavedPage() {
   // Fetch all careers to pass to client (optimized)
