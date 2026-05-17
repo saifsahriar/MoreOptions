@@ -7,7 +7,7 @@ import { blogs } from '@/lib/blogs';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
 
-export default function BlogPage() {
+export default function BlogClient() {
   const [activeFilter, setActiveFilter] = useState('All');
 
   const filters = ['All', 'Emerging Careers', 'Science', 'Commerce', 'Arts & Design', 'Technology'];

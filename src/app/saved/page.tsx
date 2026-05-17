@@ -1,8 +1,9 @@
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase-server';
 import SavedClient from '@/app/saved/SavedClient';
 import type { Metadata } from 'next';
 
-export const runtime = 'edge';
+// ISR: regenerate every hour
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: 'Saved Careers | MoreOptions',
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
 
 export default async function SavedPage() {
   // Fetch all careers to pass to client (optimized)
+  const supabase = await createClient();
   const { data: rows, error } = await supabase
     .from('careers')
     .select('career_id, career_name, industry, stream, description, salary_range_india, demand_trend, skills_tags')

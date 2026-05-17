@@ -1,11 +1,21 @@
 import Link from 'next/link';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase-server';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import MobileNavMenu from '../../MobileNavMenu';
-import CareerActions from './CareerActions';
+import Navigation from '@/components/Navigation';
+import Footer from '@/components/Footer';
 
-export const runtime = 'edge';
+import CareerActions from './CareerActions';
+import { createClient as createSupabaseClient } from '@supabase/supabase-js';
+
+export async function generateStaticParams() {
+  const supabase = createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+  const { data: careers } = await supabase.from('careers').select('career_id');
+  return careers?.map(c => ({ id: c.career_id })) || [];
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
@@ -13,6 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     return { title: 'Career Not Found | MoreOptions' };
   }
 
+  const supabase = await createClient();
   const { data: career, error } = await supabase
     .from('careers')
     .select('career_name, description')
@@ -37,32 +48,13 @@ export default async function CareerPage({ params }: { params: Promise<{ id: str
     return notFound();
   }
 
-  let career = null;
-  let error = null;
+  const supabase = await createClient();
 
-  if (id === 'IND-FA0001') {
-    career = {
-      career_id: 'IND-FA0001',
-      career_name: 'Forensic Accountant',
-      industry: 'Finance',
-      minimum_qualification: "Bachelor's in Commerce/Finance, followed by CA/CPA and CFAP certification",
-      typical_pathways: '10+2 (Commerce) -> B.Com/BBA -> CA/CPA -> Post Qualification Course in Forensic Accounting and Fraud Detection (FAFD)',
-      nsqf_level: 7,
-      skills_tags: 'Fraud Detection, Financial Modeling, Auditing, Data Analysis, Legal Knowledge',
-      salary_range_india: '₹6.0L - ₹15.0L/year (estimate)',
-      demand_trend: 'High',
-      stream: 'Commerce (Mathematics preferred)',
-      description: 'Forensic Accountants are financial detectives who investigate fraud, embezzlement, and financial crimes. They analyze complex financial records to uncover discrepancies and often work closely with law enforcement agencies or serve as expert witnesses in court proceedings. In India, with the rise of corporate frauds and digital transactions, the demand for forensic accountants has surged among Big 4 accounting firms, regulatory bodies like SEBI, and specialized financial consulting firms. The role requires meticulous attention to detail and strong accounting expertise.'
-    };
-  } else {
-    const res = await supabase
-      .from('careers')
-      .select('*')
-      .eq('career_id', id)
-      .single();
-    career = res.data;
-    error = res.error;
-  }
+  const { data: career, error } = await supabase
+    .from('careers')
+    .select('*')
+    .eq('career_id', id)
+    .single();
 
   if (error || !career) {
     return notFound();
@@ -94,20 +86,7 @@ export default async function CareerPage({ params }: { params: Promise<{ id: str
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/<\/script>/gi, '<\\/script>') }} />
-      <nav>
-        <Link href="/" className="nav-logo">MoreOptions</Link>
-        <ul className="nav-links">
-          <li><Link href="/careers">Explore Careers</Link></li>
-          <li><Link href="/blog">Insights</Link></li>
-          <li><Link href="/saved">Saved</Link></li>
-        </ul>
-        <div className="nav-actions">
-          <Link href="/">
-            <button className="nav-cta">Discover yours →</button>
-          </Link>
-          <MobileNavMenu />
-        </div>
-      </nav>
+      <Navigation />
 
       <div className="breadcrumb">
         <Link href="/">Home</Link> / <Link href="/careers">Careers</Link> / <span>{career.career_name}</span>
@@ -290,13 +269,7 @@ export default async function CareerPage({ params }: { params: Promise<{ id: str
         </aside>
       </div>
 
-      <footer>
-        <div className="footer-logo">MoreOptions</div>
-        <div className="footer-links">
-          <Link href="#">About</Link><Link href="#">Privacy</Link><Link href="#">Contact</Link>
-        </div>
-        <div className="footer-copy">© 2026 MoreOptions</div>
-      </footer>
+      <Footer />
     </>
   );
 }

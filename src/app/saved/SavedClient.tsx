@@ -2,6 +2,8 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import MobileNavMenu from '../MobileNavMenu';
+import Navigation from '@/components/Navigation';
+import Footer from '@/components/Footer';
 
 type Career = {
   id: string;
@@ -35,20 +37,7 @@ export default function SavedClient({ allCareers }: { allCareers: Career[] }) {
 
   return (
     <>
-      <nav>
-        <Link href="/" className="nav-logo">MoreOptions</Link>
-        <ul className="nav-links">
-          <li><Link href="/careers">Explore Careers</Link></li>
-          <li><Link href="/blog">Insights</Link></li>
-          <li><Link href="/saved" className="active">Saved</Link></li>
-        </ul>
-        <div className="nav-actions">
-          <Link href="/">
-            <button className="nav-cta">Discover yours →</button>
-          </Link>
-          <MobileNavMenu />
-        </div>
-      </nav>
+      <Navigation />
 
       <div className="page-header" style={{ paddingBottom: '24px' }}>
         <div>
@@ -94,15 +83,7 @@ export default function SavedClient({ allCareers }: { allCareers: Career[] }) {
         )}
       </main>
 
-      <footer>
-        <div className="footer-logo">MoreOptions</div>
-        <div className="footer-links">
-          <Link href="#">About</Link>
-          <Link href="#">Privacy</Link>
-          <Link href="#">Contact</Link>
-        </div>
-        <div className="footer-copy">© 2026 MoreOptions</div>
-      </footer>
+      <Footer />
     </>
   );
 }

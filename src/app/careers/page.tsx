@@ -1,8 +1,9 @@
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase-server';
 import CareersClient from './CareersClient';
 import type { Metadata } from 'next';
 
-export const runtime = 'edge';
+// ISR: regenerate every hour (careers data doesn't change frequently)
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: 'Explore 600+ Career Paths in India | MoreOptions',
@@ -15,6 +16,7 @@ export const metadata: Metadata = {
 
 export default async function CareersPage({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
   const resolvedParams = await searchParams;
+  const supabase = await createClient();
   // Optimized fetch: only select the columns we actually use
   const { data: rows, error } = await supabase
     .from('careers')

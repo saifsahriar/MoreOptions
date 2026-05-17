@@ -2,13 +2,20 @@ import Link from 'next/link';
 import ProgressBar from './ProgressBar';
 import MobileNavMenu from '../../MobileNavMenu';
 import Image from 'next/image';
-import { getBlogBySlug } from '@/lib/blogs';
+import { getBlogBySlug, blogs } from '@/lib/blogs';
 import { notFound } from 'next/navigation';
+import Navigation from '@/components/Navigation';
+import Footer from '@/components/Footer';
 
-export const runtime = 'edge';
+export async function generateStaticParams() {
+  return blogs.map((blog) => ({
+    slug: blog.slug,
+  }));
+}
 
-export default function BlogPostPage({ params }: { params: { slug: string } }) {
-  const blog = getBlogBySlug(params.slug);
+export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
+  const resolvedParams = await params;
+  const blog = getBlogBySlug(resolvedParams.slug);
 
   if (!blog) {
     notFound();
@@ -16,20 +23,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
 
   return (
     <>
-      <nav>
-        <Link href="/" className="nav-logo">MoreOptions</Link>
-        <ul className="nav-links">
-          <li><Link href="/careers">Explore Careers</Link></li>
-          <li><Link href="/blog" className="active">Insights</Link></li>
-          <li><Link href="/saved">Saved</Link></li>
-        </ul>
-        <div className="nav-actions">
-          <Link href="/">
-            <button className="nav-cta">Discover yours →</button>
-          </Link>
-          <MobileNavMenu />
-        </div>
-      </nav>
+      <Navigation />
 
       <ProgressBar />
 
@@ -45,7 +39,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
       </div>
 
       <div className="article-hero-img" style={{ position: 'relative', height: '400px', overflow: 'hidden', borderRadius: '16px', margin: '0 auto', maxWidth: '1000px', marginBottom: '48px' }}>
-        <Image src={blog.image} alt={blog.title} fill style={{ objectFit: 'cover' }} />
+        <Image src={blog.image} alt={blog.title} fill style={{ objectFit: 'cover' }} sizes="(max-width: 1000px) 100vw, 1000px" />
       </div>
 
       <div className="article-layout">
@@ -117,15 +111,15 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
           <div className="sidebar-card">
             <div className="sidebar-card-title">Explore related careers</div>
             <div className="related-mini">
-              <Link href="/career/aiml-engineer" className="related-mini-item">
+              <Link href="/career/IND-1e60d1556d2a" className="related-mini-item">
                 <div className="related-mini-title">AI/ML Engineer</div>
                 <div className="related-mini-meta">₹12–50 LPA · High demand</div>
               </Link>
-              <Link href="/career/ux-designer" className="related-mini-item">
+              <Link href="/career/IND-4f0c7f88d236" className="related-mini-item">
                 <div className="related-mini-title">UX Designer</div>
                 <div className="related-mini-meta">₹6–22 LPA · High demand</div>
               </Link>
-              <Link href="/career/cybersecurity" className="related-mini-item">
+              <Link href="/career/IND-2fa342702be0" className="related-mini-item">
                 <div className="related-mini-title">Cybersecurity Analyst</div>
                 <div className="related-mini-meta">₹8–35 LPA · High demand</div>
               </Link>
@@ -148,13 +142,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
         </aside>
       </div>
 
-      <footer>
-        <div className="footer-logo">MoreOptions</div>
-        <div className="footer-links">
-          <Link href="#">About</Link><Link href="#">Privacy</Link><Link href="#">Contact</Link>
-        </div>
-        <div className="footer-copy">© 2026 MoreOptions</div>
-      </footer>
+      <Footer />
     </>
   );
 }

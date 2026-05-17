@@ -3,6 +3,8 @@ import { useState, useMemo, useEffect, useDeferredValue } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import MobileNavMenu from '../MobileNavMenu';
+import Navigation from '@/components/Navigation';
+import Footer from '@/components/Footer';
 
 type Career = {
   id: string;
@@ -56,6 +58,9 @@ export default function CareersClient({
   const [minSalary, setMinSalary] = useState(0);
   const [sortOrder, setSortOrder] = useState('relevance');
   const [traitsFilter, setTraitsFilter] = useState<string[]>(initialTraits);
+
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 50;
 
   const router = useRouter();
   const pathname = usePathname();
@@ -155,22 +160,17 @@ export default function CareersClient({
     return sorted;
   }, [deferredSearchQuery, streamFilter, interestFilter, demandFilter, minSalary, sortOrder, traitsFilter, initialCareers]);
 
+  const totalPages = Math.ceil(filteredCareers.length / PAGE_SIZE);
+  const paginatedCareers = filteredCareers.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  // If a filter changes, reset to page 1
+  useEffect(() => {
+    setPage(1);
+  }, [searchQuery, streamFilter, interestFilter, demandFilter, minSalary, sortOrder, traitsFilter]);
+
   return (
     <>
-      <nav>
-        <Link href="/" className="nav-logo">MoreOptions</Link>
-        <ul className="nav-links">
-          <li><Link href="/careers" className="active">Explore Careers</Link></li>
-          <li><Link href="/blog">Insights</Link></li>
-          <li><Link href="/saved">Saved</Link></li>
-        </ul>
-        <div className="nav-actions">
-          <Link href="/">
-            <button className="nav-cta">Discover yours →</button>
-          </Link>
-          <MobileNavMenu />
-        </div>
-      </nav>
+      <Navigation />
 
       <div className="page-header">
         <div className="page-header-top">
@@ -261,7 +261,7 @@ export default function CareersClient({
         <main>
           <div className="results-header">
             <div className="results-count"><strong>{filteredCareers.length}</strong> careers found</div>
-            <select className="sort-select" value={sortOrder} onChange={(e) => setSortOrder(e.target.value)}>
+            <select className="sort-select" value={sortOrder} onChange={(e) => { setSortOrder(e.target.value); setPage(1); }}>
               <option value="relevance">Sort: Relevance</option>
               <option value="salary-high">Salary: High to Low</option>
               <option value="salary-low">Salary: Low to High</option>
@@ -270,7 +270,7 @@ export default function CareersClient({
           </div>
 
           <div className="careers-grid">
-            {filteredCareers.map(c => (
+            {paginatedCareers.map(c => (
               <Link href={`/career/${c.id}`} key={c.id} className="career-card">
                 <div className="cc-top">
                   <div className="cc-cat">{c.cat}</div>
@@ -290,19 +290,30 @@ export default function CareersClient({
             ))}
           </div>
 
+          {totalPages > 1 && (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '16px', marginTop: '32px' }}>
+              <button 
+                onClick={() => setPage(p => Math.max(1, p - 1))}
+                disabled={page === 1}
+                style={{ padding: '8px 16px', border: '1px solid #ddd', borderRadius: '4px', background: page === 1 ? '#f5f5f5' : '#fff', cursor: page === 1 ? 'not-allowed' : 'pointer' }}
+              >
+                Previous
+              </button>
+              <span style={{ fontSize: '14px', color: '#666' }}>Page {page} of {totalPages}</span>
+              <button 
+                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                disabled={page === totalPages}
+                style={{ padding: '8px 16px', border: '1px solid #ddd', borderRadius: '4px', background: page === totalPages ? '#f5f5f5' : '#fff', cursor: page === totalPages ? 'not-allowed' : 'pointer' }}
+              >
+                Next
+              </button>
+            </div>
+          )}
 
         </main>
       </div>
 
-      <footer>
-        <div className="footer-logo">MoreOptions</div>
-        <div className="footer-links">
-          <Link href="#">About</Link>
-          <Link href="#">Privacy</Link>
-          <Link href="#">Contact</Link>
-        </div>
-        <div className="footer-copy">© 2026 MoreOptions</div>
-      </footer>
+      <Footer />
     </>
   );
 }
