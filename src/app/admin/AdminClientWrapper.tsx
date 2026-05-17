@@ -2,8 +2,9 @@
 
 import { useState, useCallback, useMemo } from 'react';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/navigation';
 import { createBrowserSupabaseClient } from '@/lib/supabase-browser';
-import { fetchCareers as serverFetchCareers, saveCareer, deleteCareer, saveBlog, fetchBlogs as serverFetchBlogs } from '@/lib/actions';
+import { fetchCareers as serverFetchCareers, saveCareer, deleteCareer, saveBlog, fetchBlogs as serverFetchBlogs, deleteBlog } from '@/lib/actions';
 import type { User } from '@supabase/supabase-js';
 import type { CareerObj, BlogObj } from './AdminContent';
 
@@ -14,6 +15,7 @@ const AdminContent = dynamic(() => import('./AdminContent'), {
 
 export default function AdminClientWrapper({ user, initialCareers, initialBlogs }: { user: User; initialCareers: CareerObj[]; initialBlogs: BlogObj[] }) {
   const supabase = useMemo(() => createBrowserSupabaseClient(), []);
+  const router = useRouter();
   
   const [activeTab, setActiveTab] = useState('dashboard');
   const [showAddModal, setShowAddModal] = useState(false);
@@ -21,6 +23,7 @@ export default function AdminClientWrapper({ user, initialCareers, initialBlogs 
   const [toastMsg, setToastMsg] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [editingCareer, setEditingCareer] = useState<CareerObj | null>(null);
+  const [editingBlog, setEditingBlog] = useState<BlogObj | null>(null);
 
   const [formData, setFormData] = useState({
     career_id: '',
@@ -39,7 +42,7 @@ export default function AdminClientWrapper({ user, initialCareers, initialBlogs 
     title: '',
     slug: '',
     category: 'Emerging Careers',
-    status: 'Draft',
+    status: 'Published',
     excerpt: '',
     content: '',
     image_url: ''
@@ -96,25 +99,33 @@ export default function AdminClientWrapper({ user, initialCareers, initialBlogs 
       const words = blogFormData.content.trim().split(/\s+/).length;
       const read_time_minutes = Math.max(1, Math.ceil(words / 200));
 
-      await saveBlog({
+      const payload: any = {
         ...blogFormData,
         slug,
         read_time_minutes
-      });
+      };
+      
+      if (editingBlog) {
+        payload.id = editingBlog.id;
+      }
+
+      await saveBlog(payload);
       setShowBlogModal(false);
-      showToast('Article published');
+      showToast(editingBlog ? 'Article updated' : 'Article published');
+      setEditingBlog(null);
       setBlogFormData({
         title: '',
         slug: '',
         category: 'Emerging Careers',
-        status: 'Draft',
+        status: 'Published',
         excerpt: '',
         content: '',
         image_url: ''
       });
       fetchBlogs();
+      router.refresh();
     } catch (err) {
-      showToast('Failed to publish article');
+      showToast(editingBlog ? 'Failed to update article' : 'Failed to publish article');
       console.error(err);
     }
   };
@@ -141,6 +152,18 @@ export default function AdminClientWrapper({ user, initialCareers, initialBlogs 
     return 'd-new';
   };
 
+  const handleDeleteBlog = async (id: string | number) => {
+    if (!confirm('Are you sure you want to delete this article?')) return;
+    try {
+      await deleteBlog(id);
+      showToast('Article deleted successfully');
+      fetchBlogs();
+      router.refresh();
+    } catch (err) {
+      showToast('Failed to delete article');
+    }
+  };
+
   return (
     <>
       <AdminContent 
@@ -154,6 +177,7 @@ export default function AdminClientWrapper({ user, initialCareers, initialBlogs 
         setSearchQuery={setSearchQuery}
         handleLogout={handleLogout}
         handleDelete={handleDelete}
+        handleDeleteBlog={handleDeleteBlog}
         setShowAddModal={(show: boolean, career?: CareerObj) => {
           if (show) {
             if (career) {
@@ -182,7 +206,34 @@ export default function AdminClientWrapper({ user, initialCareers, initialBlogs 
           }
           setShowAddModal(show)
         }}
-        setShowBlogModal={setShowBlogModal}
+        setShowBlogModal={(show: boolean, blog?: BlogObj) => {
+          if (show) {
+            if (blog) {
+              setEditingBlog(blog);
+              setBlogFormData({
+                title: blog.title || '',
+                slug: blog.slug || '',
+                category: blog.category || 'Emerging Careers',
+                status: blog.status || 'Draft',
+                excerpt: blog.excerpt || '',
+                content: blog.content || '',
+                image_url: blog.image_url || ''
+              });
+            } else {
+              setEditingBlog(null);
+              setBlogFormData({
+                title: '',
+                slug: '',
+                category: 'Emerging Careers',
+                status: 'Draft',
+                excerpt: '',
+                content: '',
+                image_url: ''
+              });
+            }
+          }
+          setShowBlogModal(show);
+        }}
         getDemandClass={getDemandClass}
       />
 
@@ -235,7 +286,7 @@ export default function AdminClientWrapper({ user, initialCareers, initialBlogs 
         <div className="modal-overlay open" onClick={(e) => { if (e.target === e.currentTarget) setShowBlogModal(false); }}>
           <div className="modal">
             <div className="modal-head">
-              <div className="modal-head-title">New article</div>
+              <div className="modal-head-title">{editingBlog ? 'Edit article' : 'New article'}</div>
               <button className="modal-close" onClick={() => setShowBlogModal(false)}>×</button>
             </div>
             <div className="modal-body">
@@ -273,7 +324,7 @@ export default function AdminClientWrapper({ user, initialCareers, initialBlogs 
             </div>
             <div className="modal-foot">
               <button className="btn btn-ghost" onClick={() => setShowBlogModal(false)}>Cancel</button>
-              <button className="btn btn-primary" onClick={handleSaveBlog}>Publish article →</button>
+              <button className="btn btn-primary" onClick={handleSaveBlog}>{editingBlog ? 'Update article' : 'Publish article'} →</button>
             </div>
           </div>
         </div>

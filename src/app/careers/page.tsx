@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 
 // ISR: regenerate every hour (careers data doesn't change frequently)
 export const revalidate = 3600;
+export const runtime = 'edge';
 
 export const metadata: Metadata = {
   title: 'Explore 600+ Career Paths in India | MoreOptions',

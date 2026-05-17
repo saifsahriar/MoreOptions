@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 
 // ISR: regenerate every hour
 export const revalidate = 3600;
+export const runtime = 'edge';
 
 export const metadata: Metadata = {
   title: 'Saved Careers | MoreOptions',

@@ -2,13 +2,39 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import MobileNavMenu from './MobileNavMenu';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
 import Image from 'next/image';
-import { blogs } from '@/lib/blogs';
 
-export default function HomeClient() {
+interface DBBlog {
+  id: string;
+  title: string;
+  slug: string;
+  category?: string;
+  status?: string;
+  excerpt?: string;
+  content?: string;
+  image_url?: string;
+  read_time_minutes?: number;
+  created_at: string;
+  updated_at: string;
+}
+
+interface HomeClientProps {
+  initialBlogs: DBBlog[];
+}
+
+const formatDate = (dateStr: string) => {
+  try {
+    const d = new Date(dateStr);
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    return `${months[d.getMonth()]} ${d.getFullYear()}`;
+  } catch (e) {
+    return "March 2026";
+  }
+};
+
+export default function HomeClient({ initialBlogs }: HomeClientProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedStream, setSelectedStream] = useState<string | null>(null);
@@ -252,18 +278,28 @@ export default function HomeClient() {
           <Link href="/blog" className="section-link">All articles →</Link>
         </div>
         <div className="blog-grid">
-          {blogs.slice(0, 3).map((blog) => (
-            <Link href={`/blog/${blog.slug}`} key={blog.slug} className="blog-card" style={{ textDecoration: 'none', color: 'inherit' }}>
-              <div className="blog-img" style={{ position: 'relative', overflow: 'hidden' }}>
-                <Image src={blog.image} alt={blog.title} fill style={{ objectFit: 'cover' }} />
-              </div>
-              <div className="blog-body">
-                <div className="blog-cat">{blog.category}</div>
-                <div className="blog-title">{blog.title}</div>
-                <div className="blog-meta">{blog.time} · {blog.date}</div>
-              </div>
-            </Link>
-          ))}
+          {(initialBlogs || []).slice(0, 3).map((dbBlog) => {
+            const blog = {
+              slug: dbBlog.slug,
+              title: dbBlog.title,
+              category: dbBlog.category || "General",
+              image: dbBlog.image_url || "/images/blog/ai_future.png",
+              time: dbBlog.read_time_minutes ? `${dbBlog.read_time_minutes} min read` : "5 min read",
+              date: formatDate(dbBlog.updated_at || dbBlog.created_at)
+            };
+            return (
+              <Link href={`/blog/${blog.slug}`} key={blog.slug} className="blog-card" style={{ textDecoration: 'none', color: 'inherit' }}>
+                <div className="blog-img" style={{ position: 'relative', overflow: 'hidden' }}>
+                  <Image src={blog.image} alt={blog.title} fill style={{ objectFit: 'cover' }} />
+                </div>
+                <div className="blog-body">
+                  <div className="blog-cat">{blog.category}</div>
+                  <div className="blog-title">{blog.title}</div>
+                  <div className="blog-meta">{blog.time} · {blog.date}</div>
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </section>
 

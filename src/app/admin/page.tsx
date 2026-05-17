@@ -11,6 +11,8 @@ export const metadata: Metadata = {
   }
 };
 
+export const runtime = 'edge';
+
 export default async function AdminPage() {
   const supabase = await createClient();
   const { data: { session } } = await supabase.auth.getSession();
@@ -32,7 +34,7 @@ export default async function AdminPage() {
   const { data: blogs } = await supabase
     .from('blogs')
     .select('*')
-    .order('created_at', { ascending: false });
+    .order('updated_at', { ascending: false });
 
   return (
     <AdminClientWrapper 

@@ -76,7 +76,7 @@ export async function fetchBlogs() {
   const { data, error } = await supabase
     .from('blogs')
     .select('*')
-    .order('created_at', { ascending: false })
+    .order('updated_at', { ascending: false })
   
   if (error) {
     console.error('Database fetch error:', error)
@@ -199,3 +199,61 @@ export async function deleteCareer(id: string | number) {
   revalidatePath('/careers')
   return { success: true }
 }
+
+export async function deleteBlog(id: string | number) {
+  await checkRateLimit('delete_blog')
+  const user = await getSession()
+  if (!user) {
+    throw new Error('Unauthorized')
+  }
+
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('blogs')
+    .delete()
+    .eq('id', id)
+
+  if (error) {
+    console.error('Database delete error:', error)
+    throw new Error('Failed to delete blog')
+  }
+
+  revalidatePath('/admin')
+  revalidatePath('/blog')
+  return { success: true }
+}
+
+export async function fetchPublishedBlogs() {
+  await checkRateLimit('fetch_published_blogs')
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('blogs')
+    .select('*')
+    .ilike('status', 'published')
+    .order('updated_at', { ascending: false })
+  
+  if (error) {
+    console.error('Database fetch error:', error)
+    throw new Error('Failed to fetch published blogs')
+  }
+
+  return data
+}
+
+export async function fetchBlogBySlug(slug: string) {
+  await checkRateLimit('fetch_blog_by_slug')
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('blogs')
+    .select('*')
+    .eq('slug', slug)
+    .maybeSingle()
+  
+  if (error) {
+    console.error('Database fetch error:', error)
+    throw new Error('Failed to fetch blog by slug')
+  }
+
+  return data
+}
+

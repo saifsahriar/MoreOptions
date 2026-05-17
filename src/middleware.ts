@@ -1,7 +1,7 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   let response = NextResponse.next({
     request: {
       headers: request.headers,
@@ -48,7 +48,7 @@ export async function proxy(request: NextRequest) {
   }
 
   // 2. CSP Nonce Generation
-  const nonce = Buffer.from(crypto.randomUUID()).toString('base64')
+  const nonce = btoa(crypto.randomUUID())
   
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://oqvcwfmbgmrjvffiyhhm.supabase.co';
 

@@ -23,6 +23,8 @@ export interface BlogObj {
   image_url: string;
   read_time_minutes: number;
   created_at: string;
+  updated_at?: string;
+  content?: string;
 }
 
 interface AdminContentProps {
@@ -36,8 +38,9 @@ interface AdminContentProps {
   setSearchQuery: (query: string) => void;
   handleLogout: () => void;
   handleDelete: (id: string | number) => void;
+  handleDeleteBlog: (id: string | number) => void;
   setShowAddModal: (show: boolean, career?: CareerObj) => void;
-  setShowBlogModal: (show: boolean) => void;
+  setShowBlogModal: (show: boolean, blog?: BlogObj) => void;
   getDemandClass: (d?: string) => string;
 }
 
@@ -52,6 +55,7 @@ export default function AdminContent({
   setSearchQuery,
   handleLogout,
   handleDelete,
+  handleDeleteBlog,
   setShowAddModal,
   setShowBlogModal,
   getDemandClass
@@ -255,10 +259,10 @@ export default function AdminContent({
                   <div className="blog-admin-card" key={blog.id}>
                     <div className="blog-admin-img" style={{ backgroundImage: `url(${blog.image_url})`, backgroundSize: 'cover', backgroundPosition: 'center', color: 'transparent' }}>IMG</div>
                     <div className="blog-admin-title">{blog.title}</div>
-                    <div className="blog-admin-meta">{blog.status === 'published' ? 'Published' : 'Draft'} · {blog.read_time_minutes} min read · {new Date(blog.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</div>
+                    <div className="blog-admin-meta">{blog.status === 'published' ? 'Published' : 'Draft'} · {blog.read_time_minutes} min read · {new Date(blog.updated_at || blog.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</div>
                     <div className="blog-admin-actions">
-                      <button className="btn btn-ghost btn-sm" onClick={() => setShowBlogModal(true)}>Edit</button>
-                      <button className="btn btn-danger btn-sm" onClick={() => { }}>Delete</button>
+                      <button className="btn btn-ghost btn-sm" onClick={() => setShowBlogModal(true, blog)}>Edit</button>
+                      <button className="btn btn-danger btn-sm" onClick={() => handleDeleteBlog(blog.id)}>Delete</button>
                     </div>
                   </div>
                 ))}
