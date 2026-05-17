@@ -1,12 +1,17 @@
 import Link from 'next/link';
-import { createClient } from '@/lib/supabase-server';
+import { supabase } from '@/lib/supabase';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
 import CareerActions from './CareerActions';
 
-export const runtime = 'edge';
+export const dynamicParams = false;
+
+export async function generateStaticParams() {
+  const { data: careers } = await supabase.from('careers').select('career_id');
+  return careers?.map((c: { career_id: string }) => ({ id: String(c.career_id) })) || [];
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
@@ -14,7 +19,6 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     return { title: 'Career Not Found | MoreOptions' };
   }
 
-  const supabase = await createClient();
   const { data: career, error } = await supabase
     .from('careers')
     .select('career_name, description')
@@ -38,8 +42,6 @@ export default async function CareerPage({ params }: { params: Promise<{ id: str
   if (!id) {
     return notFound();
   }
-
-  const supabase = await createClient();
 
   const { data: career, error } = await supabase
     .from('careers')

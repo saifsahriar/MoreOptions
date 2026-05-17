@@ -19,11 +19,9 @@ type Career = {
 };
 
 export default function CareersClient({ 
-  initialCareers,
-  searchParams 
+  initialCareers
 }: { 
-  initialCareers: Career[],
-  searchParams?: { [key: string]: string | string[] | undefined }
+  initialCareers: Career[]
 }) {
   const streamCounts = useMemo(() => {
     const counts = { All: initialCareers.length, Science: 0, Commerce: 0, Arts: 0, Any: 0 };
@@ -37,27 +35,15 @@ export default function CareersClient({
     return counts;
   }, [initialCareers]);
 
-  let initialStream = 'All';
-  if (searchParams?.stream) {
-    const s = String(searchParams.stream);
-    if (s.includes('Science')) initialStream = 'Science';
-    else if (s.includes('Commerce')) initialStream = 'Commerce';
-    else if (s.includes('Arts') || s.includes('Humanities')) initialStream = 'Arts';
-    else if (s.includes('Any')) initialStream = 'Any';
-  }
-  
-  const initialTraits = searchParams?.traits ? String(searchParams.traits).split(',') : [];
-  const initialQuery = searchParams?.query ? String(searchParams.query).slice(0, 200) : '';
-
-  const [searchQuery, setSearchQuery] = useState(initialQuery);
+  const [searchQuery, setSearchQuery] = useState('');
   const deferredSearchQuery = useDeferredValue(searchQuery);
 
-  const [streamFilter, setStreamFilter] = useState(initialStream);
+  const [streamFilter, setStreamFilter] = useState('All');
   const [interestFilter, setInterestFilter] = useState('All');
   const [demandFilter, setDemandFilter] = useState('All');
   const [minSalary, setMinSalary] = useState(0);
   const [sortOrder, setSortOrder] = useState('relevance');
-  const [traitsFilter, setTraitsFilter] = useState<string[]>(initialTraits);
+  const [traitsFilter, setTraitsFilter] = useState<string[]>([]);
 
   const [page, setPage] = useState(1);
   const PAGE_SIZE = 50;
@@ -77,21 +63,34 @@ export default function CareersClient({
     window.history.replaceState(null, '', `${pathname}?${params.toString()}`);
   };
 
-  // Sync state if URL changes externally (e.g. back button, or clicking from home page)
+  // Sync state if URL changes externally (e.g. back button, initial mount, or clicking from home page)
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      const q = params.get('query') || '';
-      if (searchQuery.trim() !== q.trim()) {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
+    const handleUrlSync = () => {
+      if (typeof window !== 'undefined') {
+        const params = new URLSearchParams(window.location.search);
+        
+        const q = params.get('query') || '';
         setSearchQuery(q);
+        
+        const s = params.get('stream') || 'All';
+        let streamVal = 'All';
+        if (s.includes('Science')) streamVal = 'Science';
+        else if (s.includes('Commerce')) streamVal = 'Commerce';
+        else if (s.includes('Arts') || s.includes('Humanities')) streamVal = 'Arts';
+        else if (s.includes('Any')) streamVal = 'Any';
+        setStreamFilter(streamVal);
+        
+        const t = params.get('traits') ? params.get('traits')!.split(',') : [];
+        setTraitsFilter(t);
       }
-      
-      const t = params.get('traits') ? params.get('traits')!.split(',') : [];
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setTraitsFilter(t);
-    }
-  }, [searchParams, searchQuery]); // re-run when Next.js detects a searchParams prop change
+    };
+
+    // Run on mount
+    handleUrlSync();
+
+    window.addEventListener('popstate', handleUrlSync);
+    return () => window.removeEventListener('popstate', handleUrlSync);
+  }, []);
 
   const filteredCareers = useMemo(() => {
     let result = initialCareers;

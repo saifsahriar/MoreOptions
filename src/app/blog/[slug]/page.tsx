@@ -1,14 +1,21 @@
 import Link from 'next/link';
 import ProgressBar from './ProgressBar';
 import Image from 'next/image';
-import { fetchBlogBySlug, fetchPublishedBlogs } from '@/lib/actions';
 import { notFound } from 'next/navigation';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
 import ReactMarkdown from 'react-markdown';
+import { supabase } from '@/lib/supabase';
 
-export const revalidate = 0; // Dynamic server component
-export const runtime = 'edge';
+export const revalidate = 3600; // ISR: regenerate every hour
+
+export async function generateStaticParams() {
+  const { data: blogs } = await supabase
+    .from('blogs')
+    .select('slug')
+    .ilike('status', 'published');
+  return blogs?.map((b: { slug: string }) => ({ slug: b.slug })) || [];
+}
 
 interface DBBlog {
   id: string;
@@ -36,14 +43,23 @@ const formatDate = (dateStr: string) => {
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = await params;
-  const blog = await fetchBlogBySlug(resolvedParams.slug);
+  const { data: blog } = await supabase
+    .from('blogs')
+    .select('*')
+    .eq('slug', resolvedParams.slug)
+    .maybeSingle();
 
   if (!blog) {
     notFound();
   }
 
   // Fetch other published blogs for the sidebar dynamic recommendation
-  const allBlogs = await fetchPublishedBlogs();
+  const { data: allBlogs } = await supabase
+    .from('blogs')
+    .select('*')
+    .ilike('status', 'published')
+    .order('updated_at', { ascending: false });
+
   const otherBlogs = (allBlogs || [])
     .filter((b: DBBlog) => b.slug !== resolvedParams.slug)
     .slice(0, 3);

@@ -1,10 +1,9 @@
-import { createClient } from '@/lib/supabase-server';
+import { supabase } from '@/lib/supabase';
 import CareersClient from './CareersClient';
 import type { Metadata } from 'next';
 
 // ISR: regenerate every hour (careers data doesn't change frequently)
 export const revalidate = 3600;
-export const runtime = 'edge';
 
 export const metadata: Metadata = {
   title: 'Explore 600+ Career Paths in India | MoreOptions',
@@ -15,9 +14,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function CareersPage({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
-  const resolvedParams = await searchParams;
-  const supabase = await createClient();
+export default async function CareersPage() {
   // Optimized fetch: only select the columns we actually use
   const { data: rows, error } = await supabase
     .from('careers')
@@ -68,5 +65,5 @@ export default async function CareersPage({ searchParams }: { searchParams: Prom
   // Ensure strict case-insensitive alphabetical order for all entries, including any new ones
   mappedCareers.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
 
-  return <CareersClient initialCareers={mappedCareers} searchParams={resolvedParams} />;
+  return <CareersClient initialCareers={mappedCareers} />;
 }
