@@ -259,7 +259,7 @@ export default function AdminContent({
                   <div className="blog-admin-card" key={blog.id}>
                     <div className="blog-admin-img" style={{ backgroundImage: `url(${blog.image_url})`, backgroundSize: 'cover', backgroundPosition: 'center', color: 'transparent' }}>IMG</div>
                     <div className="blog-admin-title">{blog.title}</div>
-                    <div className="blog-admin-meta">{blog.status === 'published' ? 'Published' : 'Draft'} · {blog.read_time_minutes} min read · {new Date(blog.updated_at || blog.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</div>
+                    <div className="blog-admin-meta">{blog.status?.toLowerCase() === 'published' ? 'Published' : 'Draft'} · {blog.read_time_minutes} min read · {new Date(blog.updated_at || blog.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</div>
                     <div className="blog-admin-actions">
                       <button className="btn btn-ghost btn-sm" onClick={() => setShowBlogModal(true, blog)}>Edit</button>
                       <button className="btn btn-danger btn-sm" onClick={() => handleDeleteBlog(blog.id)}>Delete</button>

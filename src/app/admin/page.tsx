@@ -15,12 +15,12 @@ export const runtime = 'edge';
 
 export default async function AdminPage() {
   const supabase = await createClient();
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { user } } = await supabase.auth.getUser();
 
   // Check RBAC claim for admin role
-  const isAdmin = session?.user?.app_metadata?.role === 'admin';
+  const isAdmin = user?.app_metadata?.role === 'admin';
 
-  if (!session || !isAdmin) {
+  if (!user || !isAdmin) {
     return <LoginForm />;
   }
 
@@ -38,7 +38,7 @@ export default async function AdminPage() {
 
   return (
     <AdminClientWrapper 
-      user={session.user} 
+      user={user} 
       initialCareers={careers || []} 
       initialBlogs={blogs || []}
     />

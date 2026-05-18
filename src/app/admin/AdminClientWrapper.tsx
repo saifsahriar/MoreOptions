@@ -42,7 +42,7 @@ export default function AdminClientWrapper({ user, initialCareers, initialBlogs 
     title: '',
     slug: '',
     category: 'Emerging Careers',
-    status: 'Published',
+    status: 'published',
     excerpt: '',
     content: '',
     image_url: ''
@@ -117,7 +117,7 @@ export default function AdminClientWrapper({ user, initialCareers, initialBlogs 
         title: '',
         slug: '',
         category: 'Emerging Careers',
-        status: 'Published',
+        status: 'published',
         excerpt: '',
         content: '',
         image_url: ''
@@ -214,7 +214,7 @@ export default function AdminClientWrapper({ user, initialCareers, initialBlogs 
                 title: blog.title || '',
                 slug: blog.slug || '',
                 category: blog.category || 'Emerging Careers',
-                status: blog.status || 'Draft',
+                status: blog.status || 'draft',
                 excerpt: blog.excerpt || '',
                 content: blog.content || '',
                 image_url: blog.image_url || ''
@@ -225,7 +225,7 @@ export default function AdminClientWrapper({ user, initialCareers, initialBlogs 
                 title: '',
                 slug: '',
                 category: 'Emerging Careers',
-                status: 'Draft',
+                status: 'draft',
                 excerpt: '',
                 content: '',
                 image_url: ''
@@ -296,7 +296,7 @@ export default function AdminClientWrapper({ user, initialCareers, initialBlogs 
                   <select value={blogFormData.category} onChange={e => setBlogFormData({...blogFormData, category: e.target.value})}><option>Emerging Careers</option><option>Science</option><option>Commerce</option><option>Arts & Design</option><option>Technology</option></select>
                 </div>
                 <div><label>Status</label>
-                  <select value={blogFormData.status} onChange={e => setBlogFormData({...blogFormData, status: e.target.value})}><option>Draft</option><option>Published</option></select>
+                  <select value={blogFormData.status} onChange={e => setBlogFormData({...blogFormData, status: e.target.value})}><option value="draft">Draft</option><option value="published">Published</option></select>
                 </div>
               </div>
               <div className="form-row"><label>Introduction / excerpt</label><textarea placeholder="A short paragraph that appears in listing pages…" value={blogFormData.excerpt} onChange={e => setBlogFormData({...blogFormData, excerpt: e.target.value})}></textarea></div>
