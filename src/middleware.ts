@@ -55,8 +55,8 @@ export async function middleware(request: NextRequest) {
   // React requires 'unsafe-eval' in development mode
   const isDev = process.env.NODE_ENV === 'development';
   const scriptSrc = isDev 
-    ? `'self' 'nonce-${nonce}' 'unsafe-eval' 'strict-dynamic' https://www.googletagmanager.com https://hcaptcha.com https://*.hcaptcha.com`
-    : `'self' 'nonce-${nonce}' 'strict-dynamic' https://www.googletagmanager.com https://hcaptcha.com https://*.hcaptcha.com`;
+    ? `'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://hcaptcha.com https://*.hcaptcha.com`
+    : `'self' 'unsafe-inline' https://www.googletagmanager.com https://hcaptcha.com https://*.hcaptcha.com`;
 
   const cspHeader = `
     default-src 'self';

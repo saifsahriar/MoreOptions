@@ -197,7 +197,7 @@ export default function HomeClient({ initialBlogs }: HomeClientProps) {
             {
               id: 'IND-0697987cc583',
               cat: 'Creative',
-              name: 'Game Designer',
+              name: 'Game Developer',
               desc: 'Craft interactive worlds, mechanics, and stories that millions of players experience firsthand.',
               salary: '₹5–25 LPA',
               demandClass: 'demand-high',
