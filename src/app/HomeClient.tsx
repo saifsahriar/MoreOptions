@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Navigation from '@/components/Navigation';
@@ -38,8 +38,8 @@ export default function HomeClient({ initialBlogs }: HomeClientProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedStream, setSelectedStream] = useState<string | null>(null);
-  const [selectedEducation, setSelectedEducation] = useState<string | null>(null);
-  const [selectedTraits, setSelectedTraits] = useState<string[]>([]);
+  const [selectedActions, setSelectedActions] = useState<string[]>([]);
+  const [selectedIndustries, setSelectedIndustries] = useState<string[]>([]);
   const [activeFilter, setActiveFilter] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const router = useRouter();
@@ -50,11 +50,34 @@ export default function HomeClient({ initialBlogs }: HomeClientProps) {
     setCurrentStep(1); // Reset step on close
   };
 
-  const toggleChip = (trait: string) => {
-    if (selectedTraits.includes(trait)) {
-      setSelectedTraits(selectedTraits.filter((t) => t !== trait));
-    } else if (selectedTraits.length < 3) {
-      setSelectedTraits([...selectedTraits, trait]);
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [isModalOpen]);
+
+  const toggleAction = (action: string) => {
+    if (selectedActions.includes(action)) {
+      setSelectedActions(selectedActions.filter((a) => a !== action));
+    } else if (selectedActions.length < 2) {
+      setSelectedActions([...selectedActions, action]);
+    }
+  };
+
+  const toggleIndustry = (industry: string) => {
+    if (industry === 'Not sure yet!') {
+      setSelectedIndustries(['Not sure yet!']);
+      return;
+    }
+    
+    let newInd = selectedIndustries.filter(i => i !== 'Not sure yet!');
+    if (newInd.includes(industry)) {
+      setSelectedIndustries(newInd.filter((i) => i !== industry));
+    } else if (newInd.length < 3) {
+      setSelectedIndustries([...newInd, industry]);
     }
   };
 
@@ -359,43 +382,49 @@ export default function HomeClient({ initialBlogs }: HomeClientProps) {
           {/* Step 2 */}
           <div className={`modal-step ${currentStep === 2 ? 'active' : ''}`} id="step2">
             <div className="modal-eyebrow">Step 2 of 3</div>
-            <div className="modal-title">Where are you now?</div>
-            <p className="modal-sub">Your current education level shapes what&apos;s available to you.</p>
-            <div className="modal-options">
-              {['In 10th grade', 'In 11th / 12th grade', 'In college / graduating'].map((edu, idx) => {
-                const icons = ['📚', '🎓', '🏛️'];
-                return (
-                  <button 
-                    key={edu}
-                    className={`modal-option ${selectedEducation === edu ? 'selected' : ''}`} 
-                    onClick={() => setSelectedEducation(edu)}
-                  >
-                    <span className="modal-option-icon">{icons[idx]}</span> {edu}
-                  </button>
-                )
-              })}
+            <div className="modal-title">What kind of work excites you?</div>
+            <p className="modal-sub">Select 1 or 2 options that sound the most fun.</p>
+            <div className="modal-options" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {[
+                { label: 'Solving complex problems & analyzing data', icon: '🧩' },
+                { label: 'Designing, writing, or creating art', icon: '🎨' },
+                { label: 'Helping, teaching, or advising people', icon: '🤝' },
+                { label: 'Leading teams, selling, or managing', icon: '📈' },
+                { label: 'Building things, coding, or working with tools', icon: '⚙️' },
+                { label: 'Organizing data, planning, and managing details', icon: '📊' }
+              ].map((action) => (
+                <button 
+                  key={action.label}
+                  className={`modal-option ${selectedActions.includes(action.label) ? 'selected' : ''}`} 
+                  onClick={() => toggleAction(action.label)}
+                  style={{ textAlign: 'left', display: 'flex', alignItems: 'center', gap: '12px' }}
+                >
+                  <span className="modal-option-icon">{action.icon}</span> 
+                  <span style={{ fontSize: '15px' }}>{action.label}</span>
+                </button>
+              ))}
             </div>
-            <button className="modal-next" onClick={() => nextStep(3)} disabled={!selectedEducation}>Continue →</button>
+            <button className="modal-next" onClick={() => nextStep(3)} disabled={selectedActions.length === 0}>Continue →</button>
           </div>
 
           {/* Step 3 */}
           <div className={`modal-step ${currentStep === 3 ? 'active' : ''}`} id="step3">
             <div className="modal-eyebrow">Step 3 of 3</div>
-            <div className="modal-title">How would you describe yourself?</div>
-            <p className="modal-sub">Pick up to 3 that feel most like you.</p>
+            <div className="modal-title">Which areas are you curious about?</div>
+            <p className="modal-sub">Select 1 to 3 industries.</p>
             <div className="modal-chips">
-              {['Creative', 'Analytical', 'Techy', 'People-person', 'Nature-lover', 'Detail-oriented', 'Leader', 'Problem-solver', 'Artistic', 'Entrepreneurial'].map(trait => (
+              {['Business & Finance', 'Technology & AI', 'Healthcare & Science', 'Media & Design', 'Environment & Nature', 'Public Service & Law', 'Not sure yet!'].map(industry => (
                 <button 
-                  key={trait}
-                  className={`modal-chip ${selectedTraits.includes(trait) ? 'selected' : ''}`} 
-                  onClick={() => toggleChip(trait)}
+                  key={industry}
+                  className={`modal-chip ${selectedIndustries.includes(industry) ? 'selected' : ''}`} 
+                  onClick={() => toggleIndustry(industry)}
                 >
-                  {trait}
+                  {industry}
                 </button>
               ))}
             </div>
-            <a href={`/careers?stream=${selectedStream}&traits=${selectedTraits.join(',')}`} style={{ textDecoration: 'none' }}>
-              <button className="modal-next" style={{ background: '#1e7e34', width: '100%' }} disabled={selectedTraits.length === 0}>
+            <a href={`/careers?stream=${selectedStream}&actions=${encodeURIComponent(selectedActions.join('|'))}&industries=${encodeURIComponent(selectedIndustries.join('|'))}`} style={{ textDecoration: 'none' }}>
+              <button className="modal-next" style={{ background: '#1e7e34', width: '100%' }} disabled={selectedIndustries.length === 0}>
                 See my careers ✦
               </button>
             </a>
