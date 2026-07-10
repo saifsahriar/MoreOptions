@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import MobileNavMenu from '@/app/MobileNavMenu';
 
 interface NavigationProps {
@@ -9,13 +9,23 @@ interface NavigationProps {
 
 export default function Navigation({ onCtaClick }: NavigationProps) {
   const pathname = usePathname();
+  const router = useRouter();
 
   return (
     <nav>
       <Link href="/" className="nav-logo">MoreOptions</Link>
       <ul className="nav-links">
         <li>
-          <Link href="/careers" className={pathname?.startsWith('/career') ? 'active' : ''}>
+          <Link 
+            href="/careers" 
+            className={pathname?.startsWith('/career') ? 'active' : ''}
+            onClick={(e) => {
+              if (pathname === '/careers') {
+                e.preventDefault();
+                router.push('/careers');
+              }
+            }}
+          >
             Explore Careers
           </Link>
         </li>
