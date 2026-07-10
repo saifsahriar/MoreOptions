@@ -1,7 +1,7 @@
 'use client';
 import { useState, useMemo, useEffect, useDeferredValue, useRef } from 'react';
 import Link from 'next/link';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import MobileNavMenu from '../MobileNavMenu';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
@@ -73,46 +73,37 @@ export default function CareersClient({
 
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const handleSearchUpdate = (val: string) => {
     setSearchQuery(val);
-    const params = new URLSearchParams(window.location.search);
+    const params = new URLSearchParams(searchParams.toString());
     if (val.trim()) {
       params.set('query', val.trim());
     } else {
       params.delete('query');
     }
-    window.history.replaceState(null, '', `${pathname}?${params.toString()}`);
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
   useEffect(() => {
-    const handleUrlSync = () => {
-      if (typeof window !== 'undefined') {
-        const params = new URLSearchParams(window.location.search);
-        
-        const q = params.get('query') || '';
-        setSearchQuery(q);
-        
-        const s = params.get('stream') || 'All';
-        let streamVal = 'All';
-        if (s.includes('Science')) streamVal = 'Science';
-        else if (s.includes('Commerce')) streamVal = 'Commerce';
-        else if (s.includes('Arts') || s.includes('Humanities')) streamVal = 'Arts';
-        else if (s.includes('Any')) streamVal = 'Any';
-        setStreamFilter(streamVal);
-        
-        const a = params.get('actions') ? params.get('actions')!.split('|') : [];
-        setActionsFilter(a);
+    const q = searchParams.get('query') || '';
+    setSearchQuery(q);
+    
+    const s = searchParams.get('stream') || 'All';
+    let streamVal = 'All';
+    if (s.includes('Science')) streamVal = 'Science';
+    else if (s.includes('Commerce')) streamVal = 'Commerce';
+    else if (s.includes('Arts') || s.includes('Humanities')) streamVal = 'Arts';
+    else if (s.includes('Any')) streamVal = 'Any';
+    setStreamFilter(streamVal);
+    
+    const a = searchParams.get('actions') ? searchParams.get('actions')!.split('|') : [];
+    setActionsFilter(a);
 
-        const i = params.get('industries') ? params.get('industries')!.split('|') : [];
-        setIndustriesFilter(i);
-      }
-    };
-
-    handleUrlSync();
-    window.addEventListener('popstate', handleUrlSync);
-    return () => window.removeEventListener('popstate', handleUrlSync);
-  }, []);
+    const i = searchParams.get('industries') ? searchParams.get('industries')!.split('|') : [];
+    setIndustriesFilter(i);
+  }, [searchParams]);
 
   const processedCareers = useMemo(() => {
     const isQuizActive = actionsFilter.length > 0 || industriesFilter.length > 0;

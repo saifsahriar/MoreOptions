@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { supabase } from '@/lib/supabase';
 import CareersClient from './CareersClient';
 import type { Metadata } from 'next';
@@ -65,5 +66,9 @@ export default async function CareersPage() {
   // Ensure strict case-insensitive alphabetical order for all entries, including any new ones
   mappedCareers.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
 
-  return <CareersClient initialCareers={mappedCareers} />;
+  return (
+    <Suspense fallback={<div style={{ padding: '100px', textAlign: 'center' }}>Loading careers...</div>}>
+      <CareersClient initialCareers={mappedCareers} />
+    </Suspense>
+  );
 }
