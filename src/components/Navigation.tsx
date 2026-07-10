@@ -22,7 +22,7 @@ export default function Navigation({ onCtaClick }: NavigationProps) {
             onClick={(e) => {
               if (pathname === '/careers') {
                 e.preventDefault();
-                router.push('/careers');
+                window.location.href = '/careers';
               }
             }}
           >
