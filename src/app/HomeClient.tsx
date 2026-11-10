@@ -20,8 +20,20 @@ interface DBBlog {
   updated_at: string;
 }
 
+interface HomeCareer {
+  career_id: string;
+  career_name: string;
+  industry: string;
+  stream: string | null;
+  salary_range_india: string | null;
+  demand_trend: string | null;
+  description: string | null;
+  minimum_qualification: string | null;
+}
+
 interface HomeClientProps {
   initialBlogs: DBBlog[];
+  homeCareers: Record<string, HomeCareer>;
 }
 
 const formatDate = (dateStr: string) => {
@@ -34,7 +46,9 @@ const formatDate = (dateStr: string) => {
   }
 };
 
-export default function HomeClient({ initialBlogs }: HomeClientProps) {
+export default function HomeClient({ initialBlogs, homeCareers }: HomeClientProps) {
+  // Helper: get a field from the DB career map, falling back to a default
+  const db = (id: string) => homeCareers?.[id] ?? null;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedStream, setSelectedStream] = useState<string | null>(null);
@@ -128,42 +142,29 @@ export default function HomeClient({ initialBlogs }: HomeClientProps) {
           </div>
 
           <div className="hero-right">
-            <Link href="/career/IND-4f0c7f88d236" className="float-card">
-              <div className="float-card-top">
-                <span className="float-card-name">UX Designer</span>
-                <span className="float-card-tag">Creative</span>
-              </div>
-              <p className="float-card-desc">Shape how millions of people interact with digital products every day.</p>
-              <div className="float-card-meta">
-                <div className="float-card-stat"><strong>₹6–22 LPA</strong>Salary range</div>
-                <div className="float-card-stat"><strong>High</strong>Demand</div>
-                <div className="float-card-stat"><strong>Any stream</strong>Eligibility</div>
-              </div>
-            </Link>
-            <Link href="/career/IND-17381a6c80e8" className="float-card" style={{ marginLeft: '24px' }}>
-              <div className="float-card-top">
-                <span className="float-card-name">Marine Biologist</span>
-                <span className="float-card-tag">Science</span>
-              </div>
-              <p className="float-card-desc">Study ocean ecosystems, protect marine life, and work at the edge of the known world.</p>
-              <div className="float-card-meta">
-                <div className="float-card-stat"><strong>₹4–18 LPA</strong>Salary range</div>
-                <div className="float-card-stat"><strong>Growing</strong>Demand</div>
-                <div className="float-card-stat"><strong>Science</strong>Eligibility</div>
-              </div>
-            </Link>
-            <Link href="/career/IND-FA0001" className="float-card">
-              <div className="float-card-top">
-                <span className="float-card-name">Forensic Accountant</span>
-                <span className="float-card-tag">Commerce</span>
-              </div>
-              <p className="float-card-desc">Investigate financial crimes and uncover fraud hidden in spreadsheets and ledgers.</p>
-              <div className="float-card-meta">
-                <div className="float-card-stat"><strong>₹8–30 LPA</strong>Salary range</div>
-                <div className="float-card-stat"><strong>High</strong>Demand</div>
-                <div className="float-card-stat"><strong>Commerce</strong>Eligibility</div>
-              </div>
-            </Link>
+            {[
+              { id: 'IND-4f0c7f88d236', fallbackName: 'UX Designer',         fallbackTag: 'Creative', fallbackDesc: 'Shape how millions of people interact with digital products every day.',                        fallbackSalary: '₹6–22 LPA',  fallbackDemand: 'High',    fallbackStream: 'Any stream', style: {} },
+              { id: 'IND-17381a6c80e8', fallbackName: 'Marine Biologist',     fallbackTag: 'Science',  fallbackDesc: 'Study ocean ecosystems, protect marine life, and work at the edge of the known world.',  fallbackSalary: '₹4–18 LPA',  fallbackDemand: 'Growing', fallbackStream: 'Science',    style: { marginLeft: '24px' } },
+              { id: 'IND-FA0001',       fallbackName: 'Forensic Accountant',  fallbackTag: 'Commerce', fallbackDesc: 'Investigate financial crimes and uncover fraud hidden in spreadsheets and ledgers.',      fallbackSalary: '₹8–30 LPA',  fallbackDemand: 'High',    fallbackStream: 'Commerce',   style: {} },
+            ].map(({ id, fallbackName, fallbackTag, fallbackDesc, fallbackSalary, fallbackDemand, fallbackStream, style }) => {
+              const c = db(id);
+              return (
+                <Link href={`/career/${id}`} className="float-card" style={style} key={id}>
+                  <div className="float-card-top">
+                    <span className="float-card-name">{c?.career_name ?? fallbackName}</span>
+                    <span className="float-card-tag">{c?.industry ?? fallbackTag}</span>
+                  </div>
+                  <p className="float-card-desc">
+                    {c?.description ? c.description.slice(0, 100) + (c.description.length > 100 ? '…' : '') : fallbackDesc}
+                  </p>
+                  <div className="float-card-meta">
+                    <div className="float-card-stat"><strong>{c?.salary_range_india ?? fallbackSalary}</strong>Salary range</div>
+                    <div className="float-card-stat"><strong>{c?.demand_trend ?? fallbackDemand}</strong>Demand</div>
+                    <div className="float-card-stat"><strong>{c?.stream ?? fallbackStream}</strong>Eligibility</div>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -208,81 +209,39 @@ export default function HomeClient({ initialBlogs }: HomeClientProps) {
 
         <div className="careers-grid">
           {[
-            {
-              id: 'IND-1e60d1556d2a',
-              cat: 'Technology',
-              name: 'AI/ML Engineer',
-              desc: 'Build the systems that power intelligent applications, from recommendation engines to language models.',
-              salary: '₹12–50 LPA',
-              demandClass: 'demand-high',
-              demand: 'High demand'
-            },
-            {
-              id: 'IND-0697987cc583',
-              cat: 'Creative',
-              name: 'Game Developer',
-              desc: 'Craft interactive worlds, mechanics, and stories that millions of players experience firsthand.',
-              salary: '₹5–25 LPA',
-              demandClass: 'demand-high',
-              demand: 'High demand'
-            },
-            {
-              id: 'IND-1518362a624c',
-              cat: 'Science',
-              name: 'Environmental Scientist',
-              desc: 'Analyze ecosystems, study climate impact, and advise governments on sustainability policy.',
-              salary: '₹4–16 LPA',
-              demandClass: 'demand-mid',
-              demand: 'Growing'
-            },
-            {
-              id: 'IND-ef93e9a4df7d',
-              cat: 'Commerce',
-              name: 'Investment Banker',
-              desc: 'Advise corporations on mergers, acquisitions, and capital raising at the highest levels of finance.',
-              salary: '₹15–80 LPA',
-              demandClass: 'demand-high',
-              demand: 'High demand'
-            },
-            {
-              id: 'IND-69b7e50e64d8',
-              cat: 'People & Society',
-              name: 'Organizational Psychologist',
-              desc: 'Help companies build healthier workplaces by understanding human behavior and motivation at work.',
-              salary: '₹6–20 LPA',
-              demandClass: 'demand-mid',
-              demand: 'Growing'
-            },
-            {
-              id: 'IND-2fa342702be0',
-              cat: 'Technology',
-              name: 'Cybersecurity Analyst',
-              desc: 'Defend digital infrastructure from hackers, protect data, and respond to live security threats.',
-              salary: '₹8–35 LPA',
-              demandClass: 'demand-high',
-              demand: 'High demand'
-            }
+            { id: 'IND-1e60d1556d2a', cat: 'Technology',      fallbackName: 'AI/ML Engineer',            fallbackDesc: 'Build the systems that power intelligent applications, from recommendation engines to language models.', fallbackSalary: '₹12–50 LPA', fallbackDemand: 'High demand',   demandClass: 'demand-high' },
+            { id: 'IND-0697987cc583', cat: 'Creative',         fallbackName: 'Game Developer',            fallbackDesc: 'Craft interactive worlds, mechanics, and stories that millions of players experience firsthand.',        fallbackSalary: '₹5–25 LPA',  fallbackDemand: 'High demand',   demandClass: 'demand-high' },
+            { id: 'IND-1518362a624c', cat: 'Science',          fallbackName: 'Environmental Scientist',   fallbackDesc: 'Analyze ecosystems, study climate impact, and advise governments on sustainability policy.',           fallbackSalary: '₹4–16 LPA',  fallbackDemand: 'Growing',       demandClass: 'demand-mid'  },
+            { id: 'IND-ef93e9a4df7d', cat: 'Commerce',         fallbackName: 'Investment Banker',         fallbackDesc: 'Advise corporations on mergers, acquisitions, and capital raising at the highest levels of finance.',   fallbackSalary: '₹15–80 LPA', fallbackDemand: 'High demand',   demandClass: 'demand-high' },
+            { id: 'IND-69b7e50e64d8', cat: 'People & Society', fallbackName: 'Organizational Psychologist', fallbackDesc: 'Help companies build healthier workplaces by understanding human behavior and motivation at work.',  fallbackSalary: '₹6–20 LPA',  fallbackDemand: 'Growing',       demandClass: 'demand-mid'  },
+            { id: 'IND-2fa342702be0', cat: 'Technology',       fallbackName: 'Cybersecurity Analyst',     fallbackDesc: 'Defend digital infrastructure from hackers, protect data, and respond to live security threats.',       fallbackSalary: '₹8–35 LPA',  fallbackDemand: 'High demand',   demandClass: 'demand-high' },
           ]
           .filter(c => activeFilter === 'All' || c.cat === activeFilter)
-          .map(c => (
-            <Link href={`/career/${c.id}`} key={c.id} className="career-card">
-              <div className="career-card-cat">{c.cat}</div>
-              <div className="career-card-name">{c.name}</div>
-              <p className="career-card-desc">{c.desc}</p>
-              <div className="career-card-footer">
-                <span className="career-card-salary">{c.salary}</span>
-                <span className={`career-card-demand ${c.demandClass}`}>{c.demand}</span>
-              </div>
-            </Link>
-          ))}
-          {/* Show empty state if filtering results in 0 cards */}
+          .map(c => {
+            const career = db(c.id);
+            const demand = career?.demand_trend ?? c.fallbackDemand;
+            const demandClass = demand.toLowerCase().includes('high') ? 'demand-high' : c.demandClass;
+            return (
+              <Link href={`/career/${c.id}`} key={c.id} className="career-card">
+                <div className="career-card-cat">{career?.industry ?? c.cat}</div>
+                <div className="career-card-name">{career?.career_name ?? c.fallbackName}</div>
+                <p className="career-card-desc">
+                  {career?.description
+                    ? career.description.slice(0, 120) + (career.description.length > 120 ? '…' : '')
+                    : c.fallbackDesc}
+                </p>
+                <div className="career-card-footer">
+                  <span className="career-card-salary">{career?.salary_range_india ?? c.fallbackSalary}</span>
+                  <span className={`career-card-demand ${demandClass}`}>{demand}</span>
+                </div>
+              </Link>
+            );
+          })}
+          {/* Empty state when a filter has no matching cards */}
           {[
-            { id: '1', cat: 'Technology' },
-            { id: '2', cat: 'Creative' },
-            { id: '3', cat: 'Science' },
-            { id: '4', cat: 'Commerce' },
-            { id: '5', cat: 'People & Society' },
-            { id: '6', cat: 'Technology' }
+            { id: '1', cat: 'Technology' }, { id: '2', cat: 'Creative' },
+            { id: '3', cat: 'Science' },    { id: '4', cat: 'Commerce' },
+            { id: '5', cat: 'People & Society' }, { id: '6', cat: 'Technology' }
           ].filter(c => activeFilter === 'All' || c.cat === activeFilter).length === 0 && (
             <div style={{ gridColumn: '1 / -1', padding: '40px', textAlign: 'center', color: 'var(--text3)' }}>
               Explore more {activeFilter.toLowerCase()} careers by clicking &quot;View all 600+ →&quot; above.
